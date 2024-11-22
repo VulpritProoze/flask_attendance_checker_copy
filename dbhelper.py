@@ -31,7 +31,11 @@ def delete_record(table:str, **kwargs) -> bool:
 	return postprocess(sql)
 
 def add_record(table:str, **kwargs) -> bool:
-	sql:str = f"INSERT INTO {table} ({','.join(kwargs.keys())}) VALUES({','.join(f"'{w}'" for w in list(kwargs.values()))})"
+	keys:list = list(kwargs.keys())
+	values:list = list(kwargs.values())
+	columns:str = ','.join(keys)
+	valuesField:str = ','.join([f"'{value}'" for value in values])
+	sql:str = f"INSERT INTO {table} ({columns}) values({valuesField})"
 	print(f"ADD: {sql}")
 	return postprocess(sql)
 
@@ -50,4 +54,4 @@ def update_record(table:str, **kwargs) -> bool:
 	# delete_record('users', id='123')
 	# add_record('users', username='asd')
 	# getall_records('users')
-	# update_record('users', idno='123', lastname='123asd')
+	# add_record('students', idno='1000', lastname='Alinium')
