@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class='w-full py-40 px-20 text-white'>
+	<div class='grid grid-cols-2'>
+		<div class='w-full justify-self-start flex gap-x-8'>
+			<img class='w-32 object-contain flex self-start' src="/static/img/bg-img/psitslogo.png" alt="psitslogo">
+			<div class='flex justify-center flex-col'>
+				<h1 class='mb-6 text-5xl leading-[3rem] font-alte-bold tracking-wide uppercase'>
+					<span class='text-blue-500'>Student</span> 
+					<span class='text-blue-300'>Attendance</span> 
+					<span class='text-blue-500'>Checker</span> 
+					<span class='text-blue-300'>v1.0</span>
+				</h1>
+				<p class='font-alte-regular'>
+					Browse for student attendance, their performance, and track their attendance sheet.
+				</p>
+				</div>
+		</div>
+		<div class='w-[60%] justify-self-end px-4 py-6 flex flex-col bg-white border-gray-600 border bg-opacity-10 rounded-lg shadow-lg backdrop-blur-sm'>
+			<h2 class='self-center'>Login</h2>
+			<form class='flex flex-col w-full gap-5' action="{{ url_for('login') }}" enctype='multipart/form-data' id='login-form' method='post'>
+				<div>
+					<label for='username'>Username</label>
+					<input class='text-black mt-1 px-2 w-full focus-visible:outline-none focus:ring-blue-500 rounded focus:ring-2 placeholder:text-sm' type="text" id='username' name='username' required>
+				</div>
+				<div>
+					<label for='password'>Password</label>
+					<input class='text-black mt-1 px-2 w-full focus-visible:outline-none focus:ring-blue-500 rounded focus:ring-2 placeholder:text-sm' type="password" id='password' name='password' placeholder='•••••••••' required>
+				</div>
+				<div class='flex text-sm'>
+					<input class='mr-2' type='checkbox' name='remember-check' id='remember-check' value=true>
+					<label for='remember-check'>Remember me</label>
+				</div>
+				<button class='text-black self-center py-2 text-sm rounded-2xl w-full shadow-lg bg-blue-300 hover:scale-105 hover:transition-scale active:scale-100' type='submit' form='login-form'>Login</button>
+			</form>
+		</div>
+	</div>
+</section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class='text-sm text-black'>
+	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto relative'>
+		<table class='w-full table-auto text-left shadow-md'>
+			<thead class='text-xs uppercase bg-blue-200'>
+				<tr>
+					<th class='px-6 py-3'>IDNO</th>
+					<th class='px-6 py-3'>Lastname</th>
+					<th class='px-6 py-3'>Firstname</th>
+					<th class='px-6 py-3'>Course</th>
+					<th class='px-6 py-3'>Level</th>
+					<th class='px-6 py-3'>Action</th>
+				</tr>
+			</thead>
+			<tbody class='hover:bg-gray-100'>
+				{% for student in students %}
+				<tr>
+					<td class='px-6 py-4 border-b'>{{ student['idno'] }}</td>
+					<td class='px-6 py-4 border-b'>{{ student['lastname'].title() }}</td>
+					<td class='px-6 py-4 border-b'>{{ student['firstname'].title() }}</td>
+					<td class='px-6 py-4 border-b'>{{ student['course'].upper() }}</td>
+					<td class='px-6 py-4 border-b'>{{ student['level'] }}</td>
+					<td class='px-6 py-4 border-b'>
+						<button
+						id='edit-button'
+						data-idno="{{ student['idno'] }}"
+						data-lastname="{{ student['lastname'] }}"
+						data-firstname="{{ student['firstname'] }}"
+						data-course="{{ student['course'] }}"
+						data-level="{{ student['level'] }}"
+						onclick='editStudent(this)'
+						class='active:scale-95'><i class="mr-2 fas fa-cog text-lg text-yellow-600 hover:rotate-45 transition-transform ease-in-out duration-300"></i></button>
+						<button class='active:scale-95'><i class="fas fa-trash-alt text-lg text-red-600 hover:scale-110 transition-transform ease-in-out duration-300"></i></button>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+<section id='student-modal' class='hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
+	<div class='text-sm flex h-full justify-center items-center'>
+		<div id='student-modal-card' class='w-1/2 h-[80%] p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
+			<button class='absolute top-5 right-5 active:scale-90' onclick='hideModal()'>
+				<i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
+			</button>
+			<form 
+			id='student-modal-form' 
+			method='post'
+			action="{{ url_for('update_student') }}"
+			enctype='multipart/form-data' 
+			class='h-full'>
+				<div class='flex flex-col items-stretch h-full'>
+					<div class='flex flex-col flex-grow'>
+						<label>IDNO</label>
+						<input type='text' name='idno' id='idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>LASTNAME</label>
+						<input type='text' name='lastname' id='lastname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500'>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>FIRSTNAME</label>
+						<input type='text' name='firstname' id='firstname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500'>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>COURSE</label>
+						<input type='text' name='course' id='course' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500'>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>LEVEL</label>
+						<input type='text' name='level' id='level' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500'>
+					</div>
+					<div class='flex gap-4'>
+						<button type="button" 
+						onclick="cancelData(document.getElementById('edit-button'))"
+						class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'>Cancel</button>
+						<button type="submit" form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100'>Submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+{% endblock %}

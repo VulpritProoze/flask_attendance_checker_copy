@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+	<meta http-equiv="X-UA-Compatible" content='IE-Edge'>
+	<link rel='stylesheet' href='/static/css/main.css'>
+	<link rel="stylesheet" href='/static/css/all.css'>
+	<script src='/static/js/main.js'></script>
+	<title>Student Attendance System v1.0</title>
+</head>
+<body>
+	{% with messages =  get_flashed_messages() %}
+		{% if messages %}
+			<div class='absolute top-2 w-full opacity-100 transition-opacity' id='flash-msg'>
+				{% for message in messages %}
+				<div class='flex justify-start mt-2 shadow-lg rounded-md bg-yellow-500 py-3 px-2 w-[20rem] mx-auto gap-3'>
+					<i class='fa fa-warning font-sm self-center'></i>
+					<p class='self-center text-sm w-[80%]'>{{ message }}</p>
+					<button type='button' onclick="deleteFlash()"><i class='fa fa-close font-sm self-center text-red-600'></i></button>
+				</div>
+				{% endfor %}
+			</div>
+			<script type="text/javascript">
+				function deleteFlash() {
+					let element = document.getElementById('flash-msg');
+					element.classList.remove('opacity-100');
+					element.classList.add('opacity-0');
+					setTimeout(function() {
+						element.remove();
+					},1000);
+				}
+			</script>
+		{% endif %}
+	{% endwith %}
+	<div class="{% if not header %}bg-no-repeat bg-fixed bg-cover bg-[url('/static/img/bg-img/pexels-felixmittermeier-956999_26-resized2.jpg')]{% endif %}font-alte-regular min-h-screen">
+		{% if header %}
+		<header class='text-black top-0 z-10 fixed w-full'>
+			<div class='w-full z-20 relative'>
+				<div class='bg-white py-6 px-6 border-b-2 rounded-b-md shadow-md'>
+					<div class='flex align-center gap-4'>
+						<img class='w-10 object-contain flex self-start' src="/static/img/bg-img/psitslogo.png" alt="psitslogo">
+						<h1 class='self-center w-full uppercase text-xl font-alte-bold'>
+							<b>
+							{% set substrings = headerTitle.split(" ") %}
+							{% for string in substrings %}
+								{% if loop.index is odd %}
+								<span class='text-blue-700'>{{ string }}</span>
+								{% else %}
+								<span class='text-blue-400'>{{ string }}</span>
+								{% endif %}
+							{% endfor %}
+							</b>
+						</h1>
+						<button id='header-dropdown' type='checkbox' onclick='dropMenu()' class='rounded-[40rem] shadow-md self-center flex justify-center items-center bg-gray-300 w-10 h-8 hover:scale-105 hover:transition-scale active:scale-100'>
+							<i class="fas fa-cogs text-lg text-gray-600"></i>
+							<input type='checkbox' class='hidden' id='dropdown-flag' value='on'>
+						</button>
+						<form action="{{ url_for('logout') }}" id='logout-form' method='post' enctype='multipart/form-data'>
+							<button type='submit' form='logout-form' class='text-black text-sm py-2 rounded-2xl bg-blue-300 shadow-md w-20 hover:scale-105 active:scale-100'>Logout</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id='settings-dropdown' class='hidden absolute right-28 z-[9] -translate-y-10 opacity-0 transition-all duration-500 ease-in-out'>
+				<div class='bg-gray-100 rounded-b-md shadow-md h-full'>
+					<ul class='pt-2 flex flex-col justify-center items-center text-sm'>
+						<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
+							<button type='button' class='active:scale-95'>View Attendance</button>			
+						</li>
+						<li class='w-full rounded-b-md hover:bg-blue-100 px-4 py-2 text-center'>
+							<button type='button' class=' active:scale-95'>Add Student</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		{% endif %}
+		<div id='main-body'>
+			{% block content %}
+			{% endblock %}
+		</div>
+		<footer class="text-gray-600 bottom-0 fixed w-full">
+			<div class="bg-blue-200 rounded-t-md">
+				<div class="container mx-auto py-6 px-5 flex gap-4 justify-center align-center">
+					<img class='w-10 object-contain flex self-start' src="/static/img/bg-img/psitslogo.png" alt="psitslogo">
+					<h3 class='text-black text-sm sm:text-left self-center'>Student Attendance Checker</h3>
+					<p class="text-black text-sm sm:text-left self-center">&copy; 2024, Alin, Ram Railey</p>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>

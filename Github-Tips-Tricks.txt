@@ -1,0 +1,56 @@
+Log in on terminal:
+$ git config --global user.email "raileyalin@gmail.com"
+
+other credentials (don't know the use of yet):
+git config --global user.name myusername
+git config --global user.email myemail
+git config --global github.user myusername
+git config --global github.token mytoken
+
+Recommit changes to github:
+1. first log in
+2. git add .
+3. git commit -m "message Name"
+4. git push -f
+
+deploy into a new git repository:
+1. git init 
+=> git init is only if folder not yet a git repo
+2. git add --all
+3. git commit -m "first commit"
+4. git branch -M main
+5. git remote add origin https://git_url.com
+6. git push -u origin main 
+=> -u is for tracking. next time, no need to specify origin main
+
+adding only one file:
+git add filename.ext
+git commit -m "Add filename.ext"
+git push origin main
+
+current git certificate location:
+D:/Miscellaneous/Git/mingw64/ssl/certs/ca-bundle.crt
+
+if directory of git is changed
+git config --global http.sslcainfo "D:/Miscellaneous/Git/mingw64/ssl/certs/ca-bundle.crt"
+
+misc commands:
+1. gh repo view
+2. git rev-parse --show-toplevel (get root dir of repo)
+
+
+Notes:
+1. Whenever a new file is created within the github repository that is not present within the local repo (folder e.g. laptop folder), then I might need to first "git pull" and pull the new file into my local repo, so that future commits will go smoothly
+
+
+
+
+
+
+
+
+
+
+
+
+

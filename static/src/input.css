@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+	@font-face {
+	  font-family: 'Alte Haas Grotesk Regular';
+	  src: url('../font/AlteHaasGroteskRegular.ttf') format('truetype');
+	  font-weight: normal;
+	  font-style: normal;
+	}
+	@font-face {
+	  font-family: 'Alte Haas Grotesk Bold';
+	  src: url('../font/AlteHaasGroteskBold.ttf') format('truetype');
+	  font-weight: bold;
+	  font-style: normal;
+	}
+	@font-face {
+	  font-family: 'Logam Regular';
+	  src: url('../font/LogamRegular-8Mv2J.otf') format('opentype');
+	  font-weight: normal;
+	  font-style: normal;
+	}
+}
