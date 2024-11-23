@@ -6,31 +6,23 @@
 	<meta http-equiv="X-UA-Compatible" content='IE-Edge'>
 	<link rel='stylesheet' href='/static/css/main.css'>
 	<link rel="stylesheet" href='/static/css/all.css'>
-	<script src='/static/js/main.js'></script>
-	<title>Student Attendance System v1.0</title>
+	<title>Student Attendance Checker v1.0</title>
 </head>
 <body>
 	{% with messages =  get_flashed_messages() %}
 		{% if messages %}
-			<div class='absolute top-2 w-full opacity-100 transition-opacity' id='flash-msg'>
+			<div class='pointer-events-none z-50 fixed top-3 w-screen flex flex-col justify-center items-center gap-3'>
 				{% for message in messages %}
-				<div class='flex justify-start mt-2 shadow-lg rounded-md bg-yellow-500 py-3 px-2 w-[20rem] mx-auto gap-3'>
-					<i class='fa fa-warning font-sm self-center'></i>
-					<p class='self-center text-sm w-[80%]'>{{ message }}</p>
-					<button type='button' onclick="deleteFlash()"><i class='fa fa-close font-sm self-center text-red-600'></i></button>
+				<div data-index="{{ loop.index-1 }}"
+				class='flash-msg relative opacity-100 transition-opacity shadow-md'>
+					<div class='flex justify-start mt-2 shadow-lg rounded-md bg-blue-500 py-3 px-3 w-[50vw] mx-auto gap-3'>
+						<i class='fa fa-warning font-sm self-center text-yellow-200'></i>
+						<p class='self-center text-sm w-full text-white break-all'>{{ message }}</p>
+						<button type='button' class='pointer-events-auto' onclick="deleteFlash({{ loop.index-1 }})"><i class='fa fa-close font-sm self-center text-white'></i></button>
+					</div>
 				</div>
 				{% endfor %}
 			</div>
-			<script type="text/javascript">
-				function deleteFlash() {
-					let element = document.getElementById('flash-msg');
-					element.classList.remove('opacity-100');
-					element.classList.add('opacity-0');
-					setTimeout(function() {
-						element.remove();
-					},1000);
-				}
-			</script>
 		{% endif %}
 	{% endwith %}
 	<div class="{% if not header %}bg-no-repeat bg-fixed bg-cover bg-[url('/static/img/bg-img/pexels-bg-image.jpg')]{% endif %} font-alte-regular min-h-screen">
@@ -52,7 +44,7 @@
 							{% endfor %}
 							</b>
 						</h1>
-						<button id='header-dropdown' type='checkbox' onclick='dropMenu()' class='rounded-[40rem] shadow-md self-center flex justify-center items-center bg-gray-300 w-10 h-8 hover:scale-105 hover:transition-scale active:scale-100'>
+						<button id='header-dropdown' type='checkbox' onclick='dropMenu()' class='rounded-[50%] shadow-md bg-gray-300 min-w-10 h-10 hover:scale-105 hover:transition-scale active:scale-100'>
 							<i class="fas fa-cogs text-lg text-gray-600"></i>
 							<input type='checkbox' class='hidden' id='dropdown-flag' value='on'>
 						</button>
@@ -91,4 +83,6 @@
 		</footer>
 	</div>
 </body>
+<script src='/static/js/webcam.min.js'></script>
+<script src='/static/js/main.js'></script>
 </html>

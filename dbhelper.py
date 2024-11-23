@@ -19,6 +19,11 @@ def postprocess(sql:str) -> bool:
 	db.commit()
 	return True if cursor.rowcount > 0 else False
 
+def getone_record(table:str, **kwargs) -> object:
+	sql:str = f"SELECT * FROM {table} WHERE {list(kwargs.keys())[0]} = '{list(kwargs.values())[0]}'"
+	print("Get One Record: ", sql)
+	return getprocess(sql)
+
 def getall_records(table:str) -> dict:
 	sql:str = f"SELECT * FROM {table}"
 	data = getprocess(sql)
