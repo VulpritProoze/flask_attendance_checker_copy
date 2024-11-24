@@ -17,6 +17,7 @@ def postprocess(sql:str) -> bool:
 	cursor:object = db.cursor()
 	cursor.execute(sql)
 	db.commit()
+	db.close()
 	return True if cursor.rowcount > 0 else False
 
 def getone_record(table:str, **kwargs) -> object:
@@ -27,7 +28,7 @@ def getone_record(table:str, **kwargs) -> object:
 def getall_records(table:str) -> dict:
 	sql:str = f"SELECT * FROM {table}"
 	data = getprocess(sql)
-	print(f"RECORDS: {[d for d in data]}")
+	print(f"Get All Record: {sql}")
 	return data 
 
 def delete_record(table:str, **kwargs) -> bool:

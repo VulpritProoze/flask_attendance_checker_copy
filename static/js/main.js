@@ -1,12 +1,12 @@
 defaultImg = 'static/img/bg-img/personicon.svg';
 
-function deleteFlash(index) {
-	let element = document.getElementsByClassName('flash-msg')[index];
+function deleteFlash(button) {
+	let element = button.closest('.flash-msg');
 	element.classList.remove('opacity-100');
 	element.classList.add('opacity-0');
 	setTimeout(function() {
 		element.remove();
-	},1000);
+	},300);
 }
 
 function dropMenu() {
@@ -37,8 +37,86 @@ function dropMenu() {
 	}
 }
 
+function closeStudentModal() {
+	hideModal();
+
+	let idNo = document.getElementById('idno');
+	let lastName = document.getElementById('lastname');
+	let firstName = document.getElementById('firstname');
+	let courseName = document.getElementById('course');
+	let courseLevel = document.getElementById('level');
+	let qrCode = document.getElementById('qrcode');
+	let imageSrc = document.getElementById('image');
+	let imageUploadSrc = document.getElementById('image-upload');
+
+	idNo.value = '';
+	lastName.value = '';
+	firstName.value = '';
+	courseName.value = '';
+	courseLevel.value = '';
+	qrCode.src = defaultImg;
+	imageSrc.src = defaultImg;
+	imageUploadSrc.value = '';
+	try {
+		document.getElementById('webcam-result').querySelector('img').src = '';
+	} catch (err) {
+		console.log('Webcam inner html dont yet exist!    ', err)
+	}
+
+	console.log('idno  ', idNo)
+	console.log('lastname      ', lastName)
+	console.log('firstname  ', firstName)
+	console.log('course  ', courseName)
+	console.log('level  ', courseLevel)
+	console.log('qr  ', qrCode)
+	console.log('img  ', imageSrc)
+	console.log('img-upload  ', imageUploadSrc)
+}
+
+function isFields() {
+	const idNo = document.getElementById('idno').value;
+	const lastName = document.getElementById('lastname').value;
+	const firstName = document.getElementById('firstname').value;
+	const courseName = document.getElementById('course').value;
+	const courseLevel = document.getElementById('level').value;
+	const imageSrc = document.getElementById('image').src;
+
+	if (!idNo || !lastName || !firstName || !courseName || !courseLevel) {
+		alert('Please fill in all the fields.');
+		return false;
+	} else if (imageSrc === defaultImg) {
+		alert('Please pick an image or take a snapshot.');
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function deleteStudent(button) {
+	const idno = button.dataset.idno;
+	console.log(idno)
+	let input = document.getElementById('delete-student-input');
+	input.value = idno;
+}
+
+function promptDelete() {
+	return confirm('Are you sure you want to delete this student?')
+}
+
+function addStudent() {
+	showModal();
+	document.getElementById('edit-add-flag').value = 'add';
+	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
+
+	document.getElementById('idno').readOnly = false;
+	document.getElementById('image').src = defaultImg;
+	document.getElementById('qrcode').src = defaultImg;
+}
+
 function editStudent(button) {
 	showModal();
+	document.getElementById('edit-add-flag').value = 'edit';
+	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
 
 	const idno = button.dataset.idno;
 	const lastname = button.dataset.lastname;
@@ -49,6 +127,7 @@ function editStudent(button) {
 	const image = button.dataset.image;
 
 	document.getElementById('idno').value = idno;
+	document.getElementById('idno').readOnly = true;
 	document.getElementById('lastname').value = lastname;
 	document.getElementById('firstname').value = firstname;
 	document.getElementById('course').value = course;
@@ -86,23 +165,63 @@ function toggleEditImage() {
 }
 
 function cancelData(button) {
-	const idno = button.dataset.idno;
-	const lastname = button.dataset.lastname;
-	const firstname = button.dataset.firstname;
-	const course = button.dataset.course;
-	const level = button.dataset.level;
-	const qrcode = button.dataset.qrcode;
-	const image = button.dataset.image;
+	const flag = document.getElementById('edit-add-flag');
+	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
 
-	document.getElementById('idno').value = idno;
-	document.getElementById('lastname').value = lastname;
-	document.getElementById('firstname').value = firstname;
-	document.getElementById('course').value = course;
-	document.getElementById('level').value = level;
-	document.getElementById('qrcode').value = qrcode;
-	document.getElementById('image').src = image;
-	document.getElementById('image-upload').value = '';
-	document.getElementById('webcam-result').querySelector('img').src = '';
+	let idNo = document.getElementById('idno').value;
+	let lastName = document.getElementById('lastname').value;
+	let firstName = document.getElementById('firstname').value;
+	let courseName = document.getElementById('course').value;
+	let courseLevel = document.getElementById('level').value;
+	let qrCode = document.getElementById('qrcode').value;
+	let imageSrc = document.getElementById('image').src;
+	let imageUploadSrc = document.getElementById('image-upload').value;
+
+	if (flag.value == "edit") {
+		const idno = button.dataset.idno;
+		const lastname = button.dataset.lastname;
+		const firstname = button.dataset.firstname;
+		const course = button.dataset.course;
+		const level = button.dataset.level;
+		const qrcode = button.dataset.qrcode;
+		const image = button.dataset.image;
+		idNo = idno;
+		lastName = lastname;
+		firstName = firstname;
+		courseName = course;
+		courseLevel = level;
+		qrCode = qrcode;
+		imageSrc = image;
+		imageUploadSrc = '';
+		try {
+			document.getElementById('webcam-result').querySelector('img').src = '';
+		} catch (err) {
+			console.log('Webcam inner html dont yet exist!    ', err)
+		}
+	} else {
+		idNo = '';
+		lastName = '';
+		firstName = '';
+		courseName = '';
+		courseLevel = '';
+		qrCode = defaultImg;
+		imageSrc = defaultImg;
+		imageUploadSrc = '';
+		try {
+			document.getElementById('webcam-result').querySelector('img').src = '';
+		} catch (err) {
+			console.log('Webcam inner html dont yet exist!    ', err)
+		}
+	}
+
+	console.log('idno  ', idNo)
+	console.log('lastname      ', lastName)
+	console.log('firstname  ', firstName)
+	console.log('course  ', courseName)
+	console.log('level  ', courseLevel)
+	console.log('qr  ', qrCode)
+	console.log('img  ', imageSrc)
+	console.log('img-upload  ', imageUploadSrc)
 }
 
 function showModal() {
@@ -159,8 +278,17 @@ function hideTooltip(tooltipId) {
     }, 300);
 }
 
+function promptIfIdnoEmpty(event) {
+	console.log('idno   ',document.getElementById('idno').value)
+	if (document.getElementById('idno').value == '') {
+		alert('Please state your id number first.')
+		event.preventDefault();
+		return;
+	}
+}
+
 function displayImgUpload(input) {
-	if(input.files && input.files[0]){
+	if (input.files && input.files[0]){
         try {
         	let reader = new FileReader();
 	        reader.onload = function(e) {
@@ -170,9 +298,57 @@ function displayImgUpload(input) {
         } catch (err) {
         	console.log('eroeroe: ' + err)
         }
+        createQRCode(document.getElementById('idno').value);
     } else {
 		alert('No file selected.')
 	}
+}
+
+// Wa koy nasabtan ani nga function !!
+// All I know is that iya iconvert ang base64 image into FileStorage object ehehe
+function base64ToFileStorageObject(imageBase64, filename, inputElement) {
+	// const imageBase64 = document.getElementById('webcam-result').querySelector('img').src;
+	const imageBase64Sliced = imageBase64.split(',')[1];
+	try {
+		const imageBinary = atob(imageBase64Sliced);
+		const byteArray = new Uint8Array(imageBinary.length);
+		for (let i=0; i<imageBinary.length; i++) {
+			byteArray[i] = imageBinary.charCodeAt(i);
+		}
+		const blob = new Blob([byteArray], { type: 'image/jpg' });
+		filename = filename + ".jpg";
+		const file = new File([blob], filename, { type: 'image/jpg' });
+		// const fileInput = document.getElementById('image-upload');
+		const fileInput = inputElement;
+		const dataTransfer = new DataTransfer();
+		dataTransfer.items.add(file);
+		fileInput.files = dataTransfer.files;
+		fileInput.dispatchEvent(new Event("change"));
+	} catch (err) {
+		console.log(err)
+	}
+}
+
+function isBase64(uri) {
+	var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+	return base64regex.test(uri);
+}
+
+function createQRCode(idno) {
+	var qr = qrcode(4, 'L');
+	qr.addData(idno);
+	qr.make();
+	// In Base64 format
+	let qrcodeDisplay = document.getElementById('qrcode');
+	let qrcodeInput = document.getElementById('qrcode-upload');
+	qrcodeDisplay.src = qr.createDataURL();
+
+	console.log('snapshot qr', qrcodeDisplay.src);
+	console.log('isBase64? ', isBase64(qrcodeDisplay.src.split(',')[1]));
+
+	const filename = 'qrcode' + idno;
+	base64ToFileStorageObject(qrcodeDisplay.src, filename, qrcodeInput);
+	console.log('qrcode: ', qrcodeInput.value);
 }
 
 const webcamContainer = document.getElementById('webcam');
@@ -192,37 +368,16 @@ function takeSnapshot() {
 	Webcam.snap( function(data_uri) {
 		document.getElementById('webcam-result').innerHTML = '<img src="' + data_uri + '"/>';
 	})
-}
+	document.getElementById('image').src = document.getElementById('webcam-result').querySelector('img').src;
 
-// Wa koy nasabtan ani nga function !!
-// All I know is that iya iconvert ang base64 image into FileStorage object ehehe
-function uploadSnapshot() {
-	const isCamera = document.getElementById('modal-edit-flag');
-
-	if (isCamera.checked) {
-		console.log('attempting to upload snap...')
-		// const image = document.getElementById('webcam-result').querySelector('img').src;
-		// let postImageElement = document.getElementById('image-form-submit');
-		// postImageElement.value = image;
-		const imageBase64 = document.getElementById('webcam-result').querySelector('img').src;
-		const imageBase64Sliced = imageBase64.split(',')[1];
-		try {
-			const imageBinary = atob(imageBase64Sliced);
-			const byteArray = new Uint8Array(imageBinary.length);
-			for (let i=0; i<imageBinary.length; i++) {
-				byteArray[i] = imageBinary.charCodeAt(i);
-			}
-			const blob = new Blob([byteArray], { type: 'image/jpg' });
-			const file = new File([blob], "webcam_snapshot.jpg", { type: 'image/jpg' });
-			const fileInput = document.getElementById('image-upload');
-			const dataTransfer = new DataTransfer();
-			dataTransfer.items.add(file);
-			fileInput.files = dataTransfer.files;
-			fileInput.dispatchEvent(new Event("change"));
-		} catch (err) {
-			console.log(err)
-		}
-	}
+	const idno = document.getElementById('idno').value;
+	createQRCode(idno);
+	
+	console.log('attempting to upload snap...')
+	let webcamResultElement = document.getElementById('webcam-result').querySelector('img');
+	let webcamInputElement = document.getElementById('image-upload');
+	base64ToFileStorageObject(webcamResultElement.src, "webcam_snapshot", webcamInputElement);	
+	console.log('webcam: ', webcamInputElement.value);
 }
 
 function closeWebcam() {

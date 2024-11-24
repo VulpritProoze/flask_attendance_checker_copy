@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash
 from flask_session import Session
-import dbhelper, qrcode, qrcode.image.svg, os
+import dbhelper, os
+# qrcode, qrcode.image.svg
 
 app = Flask(__name__)
 uploadfolder:str = 'static/img/uploads/'
@@ -16,21 +17,18 @@ def get_users() -> dict:
 def get_students() -> dict:
 	return dbhelper.getall_records('students')
 
-def generate_qrcode(idno:str):
+@app.route('/delete_student', methods=['POST'])
+def delete_student(): 
+	idno:str = request.form.get('delete-student-input')
+	image:str = dbhelper.getone_record('students', idno=idno)[0]['image']
 	try:
-		factory = qrcode.image.svg.SvgImage
-		qrc = qrcode.make(f"STUDENT_QRCODE_{idno}", image_factory=factory)
-		qrc.save(f'static/img/bg-img/qrcodes/{idno}_ALIN_ATTENDANCE_CHECKER.svg')
-	except Exception as e:
-		flash(f'QRCode Error: {e}')
-
-@app.route('/add_student', methods=['POST'])
-def add_student():
-	idno:str = request.form.get('idno')
-	lastname:str = request.form.get('lastname')
-	firstname:str = request.form.get('firstname')
-	course:str = request.form.get('course')
-	level:str = request.form.get('level')
+		os.remove(image)
+	except:
+		flash('Student Delete: Something went wrong with deleting image.')
+	ok:bool = False
+	ok = dbhelper.delete_record('students', idno=idno)
+	flash(f'Student Delete: Student deleted successfully.') if ok else flash(f'Student Delete: Student failed to delete.')
+	return redirect('/studentlist')
 
 @app.route('/update_student', methods=['POST'])
 def update_student():
@@ -39,44 +37,45 @@ def update_student():
 	firstname:str = request.form.get('firstname')
 	course:str = request.form.get('course')
 	level:str = request.form.get('level')
-	isCameraNotFilePicker:bool = request.form.get('modal-edit-flag') == 'on'
-	file = request.files.get('image-upload')
-	print(f"\n\n{isCameraNotFilePicker}")
-	print("data: ", idno, lastname, firstname, course, level)
-	# storage_files:list = [os.path.join(uploadfolder, f) for f in os.listdir(uploadfolder)]
-	previous_image = dbhelper.getone_record('students', idno=idno)[0]['image']
-	ok:bool = False
-	if isCameraNotFilePicker:
-		image:str = os.path.join(uploadfolder, f"STUDENT_CAMERA_{idno}.jpg")
-		print(image, "    idno   ", idno)
-		try:	
-			os.remove(previous_image)
-		except FileNotFoundError as ferr:
-			flash(f'Student Update: {ferr}') 
-		except Exception as e:
-			flash(f'Student Update: {e}')
-		file.save(image)
-		ok:bool = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, image=image)
-	else:
-		filename, extension = os.path.splitext(file.filename)
-		image:str = os.path.join(uploadfolder, f"{filename}{idno}{extension}")
-		print(image, "    idno   ", idno)
-		if image != os.path.join(uploadfolder, idno):
-			try:	
-				os.remove(previous_image)
-			except FileNotFoundError as ferr:
-				flash(f'Student Update: {ferr}') 
-			except Exception as e:
-				flash(f'Student Update: {e}')
-			print("prev image: ", previous_image)
-			file.save(image)
-			ok:bool = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, image=image)
-		else:
-			ok:bool = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level)
-	# If image to save is still same image, do not save.
-		# ok:bool = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, image=image)
+	qrcodefile = request.files.get('qrcode-upload')
+	imagefile = request.files.get('image-upload')
+	isUpdateNotAdd:str = request.form.get('edit-add-flag') == 'edit'
 
-	flash('Student Update: Student updated successfully.') if ok else flash('Student Update: Student failed to update.')
+	print('\n\n')
+	print("data: ", idno, lastname, firstname, course, level)
+	print("isUpdate: ", isUpdateNotAdd)
+	print('qr file: ', qrcodefile)
+	print('image file: ', imagefile)
+	print('\nrequest.form:   ', request.form)
+	print()
+
+	ok:bool = False
+
+	image:str = os.path.join(uploadfolder, f"STUDENT_ATTENDANCE_{idno}.jpg")
+	qrcode:str = os.path.join(uploadfolder, f"QRCODE_{idno}.jpg")
+	print('image path:  ', image)
+	print('qr path:  ', qrcode)
+
+	if isUpdateNotAdd:
+		if imagefile.filename != '' and qrcodefile.filename != '':
+			imagefile.save(image)
+			qrcodefile.save(qrcode)
+			ok = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, qrcode=qrcode, image=image)
+		else:
+			flash('Student Update: Image not saved')
+			ok = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level)
+	else:
+		try:
+			ok = dbhelper.add_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, qrcode=qrcode, image=image)		
+		except Exception as err:
+			flash('Student Add: Student cannot be added because idno already exists.')
+		imagefile.save(image)
+		qrcodefile.save(qrcode)
+
+	message_header:str = 'Update' if isUpdateNotAdd else 'Add'
+	message_body:str = 'updated' if isUpdateNotAdd else 'added'
+	flash(f'Student {message_header}: Student {message_body} successfully.') if ok else flash(f'Student {message_header}: Student failed to {message_header.lower()}.')
+
 	return redirect('/studentlist')
 
 @app.route('/studentlist')
