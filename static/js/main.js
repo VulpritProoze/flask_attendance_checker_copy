@@ -91,12 +91,18 @@ function cancelData(button) {
 	const firstname = button.dataset.firstname;
 	const course = button.dataset.course;
 	const level = button.dataset.level;
+	const qrcode = button.dataset.qrcode;
+	const image = button.dataset.image;
 
-	let idNo = document.getElementById('idno').value = idno;
-	let lastName  = document.getElementById('lastname').value = lastname;
-	let firstName = document.getElementById('firstname').value = firstname;
-	let courseName = document.getElementById('course').value = course;
-	let yearLevel = document.getElementById('level').value = level;
+	document.getElementById('idno').value = idno;
+	document.getElementById('lastname').value = lastname;
+	document.getElementById('firstname').value = firstname;
+	document.getElementById('course').value = course;
+	document.getElementById('level').value = level;
+	document.getElementById('qrcode').value = qrcode;
+	document.getElementById('image').src = image;
+	document.getElementById('image-upload').value = '';
+	document.getElementById('webcam-result').querySelector('img').src = '';
 }
 
 function showModal() {

@@ -18,7 +18,7 @@
 					<div class='flex justify-start mt-2 shadow-lg rounded-md bg-blue-500 py-3 px-3 w-[50vw] mx-auto gap-3'>
 						<i class='fa fa-warning font-sm self-center text-yellow-200'></i>
 						<p class='self-center text-sm w-full text-white break-all'>{{ message }}</p>
-						<button type='button' class='pointer-events-auto' onclick="deleteFlash({{ loop.index-1 }})"><i class='fa fa-close font-sm self-center text-white'></i></button>
+						<button type='button' class='pointer-events-auto hover:scale-110 active:scale-95' onclick="deleteFlash({{ loop.index-1 }})"><i class='fa fa-close font-sm self-center text-white'></i></button>
 					</div>
 				</div>
 				{% endfor %}
