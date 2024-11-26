@@ -83,14 +83,21 @@ def studentlist():
 	if not session.get('name'):
 		return redirect('/')
 	else:
-		return render_template('studentinfo.html', header=True, students=get_students(), headerTitle='Student Information List')
+		return render_template('studentinfo.html', header=True, headerTitle='Student Information List', addStudentModal=True, students=get_students())
+
+@app.route('/attendanceviewer')
+def attendanceviewer():
+	if not session.get('name'):
+		return redirect('/')
+	else:
+		return render_template('attendanceviewer.html', header=True, headerTitle="Attendance Viewer", addStudentModal=True)
 
 @app.after_request
 def after_request(response):
 	response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 	return response
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
 	session['name'] = None
 	return redirect('/')
@@ -103,8 +110,10 @@ def login():
 	for user in users:
 		if username == user['username'] and password == user['password']:
 			session['name'] = username
+			flash('Login Attempt: Login success!')
 			return redirect('/studentlist')
 		else:
+			flash('Login Attempt: Login failed! Username or password is invalid.')
 			return redirect('/')
 
 @app.route('/')

@@ -54,8 +54,6 @@ function closeStudentModal() {
 	firstName.value = '';
 	courseName.value = '';
 	courseLevel.value = '';
-	qrCode.src = defaultImg;
-	imageSrc.src = defaultImg;
 	imageUploadSrc.value = '';
 	try {
 		document.getElementById('webcam-result').querySelector('img').src = '';
@@ -63,14 +61,10 @@ function closeStudentModal() {
 		console.log('Webcam inner html dont yet exist!    ', err)
 	}
 
-	console.log('idno  ', idNo)
-	console.log('lastname      ', lastName)
-	console.log('firstname  ', firstName)
-	console.log('course  ', courseName)
-	console.log('level  ', courseLevel)
-	console.log('qr  ', qrCode)
-	console.log('img  ', imageSrc)
-	console.log('img-upload  ', imageUploadSrc)
+	timeout( function() {
+		qrCode.src = defaultImg;
+		imageSrc.src = defaultImg;
+	}, 1000);
 }
 
 function isFields() {
@@ -79,7 +73,9 @@ function isFields() {
 	const firstName = document.getElementById('firstname').value;
 	const courseName = document.getElementById('course').value;
 	const courseLevel = document.getElementById('level').value;
-	const imageSrc = document.getElementById('image').src;
+	const imageSrc = document.getElementById('image').src.split("localhost:5000/")[1];
+
+	console.log("isFields imagesrc: ", imageSrc)
 
 	if (!idNo || !lastName || !firstName || !courseName || !courseLevel) {
 		alert('Please fill in all the fields.');

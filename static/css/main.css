@@ -626,10 +626,6 @@ video {
   pointer-events: auto;
 }
 
-.invisible {
-  visibility: hidden;
-}
-
 .fixed {
   position: fixed;
 }
@@ -642,12 +638,20 @@ video {
   position: relative;
 }
 
+.-bottom-12 {
+  bottom: -3rem;
+}
+
 .bottom-0 {
   bottom: 0px;
 }
 
 .left-2 {
   left: 0.5rem;
+}
+
+.left-3 {
+  left: 0.75rem;
 }
 
 .left-9 {
@@ -682,20 +686,12 @@ video {
   top: 1.25rem;
 }
 
-.-bottom-10 {
-  bottom: -2.5rem;
+.right-3 {
+  right: 0.75rem;
 }
 
-.-bottom-12 {
-  bottom: -3rem;
-}
-
-.left-0 {
-  left: 0px;
-}
-
-.left-3 {
-  left: 0.75rem;
+.-bottom-16 {
+  bottom: -4rem;
 }
 
 .z-10 {
@@ -779,6 +775,10 @@ video {
   height: 100vh;
 }
 
+.h-\[100vh\] {
+  height: 100vh;
+}
+
 .min-h-8 {
   min-height: 2rem;
 }
@@ -789,10 +789,6 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
-}
-
-.w-0 {
-  width: 0px;
 }
 
 .w-1\/2 {
@@ -809,6 +805,10 @@ video {
 
 .w-32 {
   width: 8rem;
+}
+
+.w-\[12rem\] {
+  width: 12rem;
 }
 
 .w-\[50\%\] {
@@ -837,10 +837,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-\[12rem\] {
-  width: 12rem;
 }
 
 .min-w-10 {
@@ -893,6 +889,10 @@ video {
   justify-content: center;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .justify-around {
   justify-content: space-around;
 }
@@ -936,6 +936,10 @@ video {
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden;
 }
 
 .break-all {
@@ -1373,6 +1377,10 @@ video {
   --tw-scale-x: 1.1;
   --tw-scale-y: 1.1;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
 }
 
 .hover\:bg-blue-100:hover {
