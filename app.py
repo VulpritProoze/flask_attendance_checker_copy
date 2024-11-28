@@ -19,12 +19,16 @@ def get_students() -> dict:
 
 @app.route('/delete_student', methods=['POST'])
 def delete_student(): 
-	idno:str = request.form.get('delete-student-input')
-	image:str = dbhelper.getone_record('students', idno=idno)[0]['image']
 	try:
+		idno:str = request.form.get('idno')
+		image:str = dbhelper.getone_record('students', idno=idno)[0]['image']
 		os.remove(image)
-	except:
+	except IndexError:
+		flash('Student Delete: idno does not exist')
+	except FileNotFoundError:
 		flash('Student Delete: Something went wrong with deleting image.')
+	except Exception as e:
+		flash(f'Student Delete: {e}')
 	ok:bool = False
 	ok = dbhelper.delete_record('students', idno=idno)
 	flash(f'Student Delete: Student deleted successfully.') if ok else flash(f'Student Delete: Student failed to delete.')
@@ -67,7 +71,7 @@ def update_student():
 	else:
 		try:
 			ok = dbhelper.add_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, qrcode=qrcode, image=image)		
-		except Exception as err:
+		except Exception:
 			flash('Student Add: Student cannot be added because idno already exists.')
 		imagefile.save(image)
 		qrcodefile.save(qrcode)

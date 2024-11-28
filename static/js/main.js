@@ -1,4 +1,5 @@
-defaultImg = 'static/img/bg-img/personicon.svg';
+const defaultImg = 'static/img/bg-img/personicon.svg';
+let modalIdNo = '';		// updated within editStudent()
 
 function deleteFlash(button) {
 	let element = button.closest('.flash-msg');
@@ -61,7 +62,7 @@ function closeStudentModal() {
 		console.log('Webcam inner html dont yet exist!    ', err)
 	}
 
-	timeout( function() {
+	setTimeout( function() {
 		qrCode.src = defaultImg;
 		imageSrc.src = defaultImg;
 	}, 1000);
@@ -91,12 +92,31 @@ function isFields() {
 function deleteStudent(button) {
 	const idno = button.dataset.idno;
 	console.log(idno)
-	let input = document.getElementById('delete-student-input');
-	input.value = idno;
+	const ok = confirm('Are you sure you want to delete this student?');
+	if (ok) {
+		const path = delete_student_path;
+		const kwargs = {idno:idno};
+		postData(path, kwargs);
+	}
 }
 
-function promptDelete() {
-	return confirm('Are you sure you want to delete this student?')
+function postData(path, kwargs, method='post') {
+	const form = document.createElement('form');
+	form.method = method;
+	form.action = path;
+
+	for (const key in kwargs) {
+		const hiddenField = document.createElement('input');
+		hiddenField.type = 'hidden';
+		hiddenField.name = key;
+		hiddenField.value = kwargs[key];
+
+		form.appendChild(hiddenField);
+	}
+
+	document.body.appendChild(form);
+	form.submit();
+	form.remove();
 }
 
 function addStudent() {
@@ -111,8 +131,10 @@ function addStudent() {
 
 function editStudent(button) {
 	showModal();
-	document.getElementById('edit-add-flag').value = 'edit';
+	let editFlag = document.getElementById('edit-add-flag');
+	editFlag.value = 'edit';
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
+	modalIdNo = button.dataset.idno;
 
 	const idno = button.dataset.idno;
 	const lastname = button.dataset.lastname;
@@ -160,18 +182,20 @@ function toggleEditImage() {
 	editFlag.checked = !editFlag.checked;
 }
 
-function cancelData(button) {
+// Revert changes in "Edit" mode or remove new data inputted in modal in "Add" mode
+function cancelData(id) {
 	const flag = document.getElementById('edit-add-flag');
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
+	const button = document.getElementById("edit-button-".concat(id));
 
-	let idNo = document.getElementById('idno').value;
-	let lastName = document.getElementById('lastname').value;
-	let firstName = document.getElementById('firstname').value;
-	let courseName = document.getElementById('course').value;
-	let courseLevel = document.getElementById('level').value;
-	let qrCode = document.getElementById('qrcode').value;
-	let imageSrc = document.getElementById('image').src;
-	let imageUploadSrc = document.getElementById('image-upload').value;
+	let idNo = document.getElementById('idno');
+	let lastName = document.getElementById('lastname');
+	let firstName = document.getElementById('firstname');
+	let courseName = document.getElementById('course');
+	let courseLevel = document.getElementById('level');
+	let qrCode = document.getElementById('qrcode');
+	let imageSrc = document.getElementById('image');
+	let imageUploadSrc = document.getElementById('image-upload');
 
 	if (flag.value == "edit") {
 		const idno = button.dataset.idno;
@@ -181,28 +205,28 @@ function cancelData(button) {
 		const level = button.dataset.level;
 		const qrcode = button.dataset.qrcode;
 		const image = button.dataset.image;
-		idNo = idno;
-		lastName = lastname;
-		firstName = firstname;
-		courseName = course;
-		courseLevel = level;
-		qrCode = qrcode;
-		imageSrc = image;
-		imageUploadSrc = '';
+		idNo.value = idno;
+		lastName.value = lastname;
+		firstName.value = firstname;
+		courseName.value = course;
+		courseLevel.value = level;
+		qrCode.src = qrcode;
+		imageSrc.src = image;
+		imageUploadSrc.value = '';
 		try {
 			document.getElementById('webcam-result').querySelector('img').src = '';
 		} catch (err) {
 			console.log('Webcam inner html dont yet exist!    ', err)
 		}
 	} else {
-		idNo = '';
-		lastName = '';
-		firstName = '';
-		courseName = '';
-		courseLevel = '';
-		qrCode = defaultImg;
-		imageSrc = defaultImg;
-		imageUploadSrc = '';
+		idNo.value = '';
+		lastName.value = '';
+		firstName.value = '';
+		courseName.value = '';
+		courseLevel.value = '';
+		qrCode.src = defaultImg;
+		imageSrc.src = defaultImg;
+		imageUploadSrc.value = '';
 		try {
 			document.getElementById('webcam-result').querySelector('img').src = '';
 		} catch (err) {
@@ -210,14 +234,14 @@ function cancelData(button) {
 		}
 	}
 
-	console.log('idno  ', idNo)
-	console.log('lastname      ', lastName)
-	console.log('firstname  ', firstName)
-	console.log('course  ', courseName)
-	console.log('level  ', courseLevel)
-	console.log('qr  ', qrCode)
-	console.log('img  ', imageSrc)
-	console.log('img-upload  ', imageUploadSrc)
+	// console.log('idno  ', idNo.value)
+	// console.log('lastname      ', lastName.value)
+	// console.log('firstname  ', firstName.value)
+	// console.log('course  ', courseName.value)
+	// console.log('level  ', courseLevel.value)
+	// console.log('qr  ', qrCode.src)
+	// console.log('img  ', imageSrc.src)
+	// console.log('img-upload  ', imageUploadSrc.value)
 }
 
 function showModal() {
@@ -259,6 +283,7 @@ function hideModal() {
 function showTooltip(tooltipId) {
     let tooltip = document.getElementById(tooltipId);
     tooltip.classList.remove('hidden');
+    tooltip.followMouseCleanup = followMouse(tooltip);
     setTimeout(() => {
         tooltip.classList.remove('opacity-0');
         tooltip.classList.add('opacity-100');
@@ -269,9 +294,24 @@ function hideTooltip(tooltipId) {
     let tooltip = document.getElementById(tooltipId);
     tooltip.classList.remove('opacity-100');
     tooltip.classList.add('opacity-0');
+    if (tooltip.followMouseCleanup) {
+    	tooltip.followMouseCleanup();
+    	tooltip.followMouseCleanup = null;
+    }
     setTimeout(() => {
         tooltip.classList.add('hidden');
     }, 300);
+}
+
+function followMouse(element) {
+	const mouselistener = (event) => {
+		const x = event.offsetX;
+		const y = event.offsetY + 15;
+		element.style.transform = `translate(${x}px, ${y}px`;
+	};
+
+	document.addEventListener('mousemove', mouselistener);
+	return () => document.removeEventListener('mousemove', mouselistener);
 }
 
 function promptIfIdnoEmpty(event) {

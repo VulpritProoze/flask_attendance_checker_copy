@@ -85,7 +85,7 @@
 			{% block content %}
 			{% endblock %}
 			{% if addStudentModal %}
-				<section id='student-modal' class='hidden overflow-y-hidden z-20 w-full h-screen bg-black/40 top-0 absolute transition-colors duration-500'>
+				<section id='student-modal' class='hidden overflow-hidden z-20 w-full h-screen bg-black/40 top-0 absolute transition-colors duration-500'>
 					<div class='text-sm flex h-full relative justify-center items-center'>
 						<div id='student-modal-card' class='w-1/2 max-md:w-[80%] p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
 							<button class='absolute top-5 right-5 active:scale-90' onclick='closeStudentModal()'>
@@ -109,7 +109,7 @@
 										data-tooltip-target='edit-image-tooltip'
 										class='absolute left-2 shadow-lg top-1 z-10 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
 											<i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
-											<div id='edit-image-tooltip' role='tooltip' class='hidden tooltip absolute w-[7rem] top-1 left-9 opacity-0 transition-opacity duration-300'>
+											<div id='edit-image-tooltip' role='tooltip' class='hidden z-50 tooltip absolute w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
 												<i class="fa-solid fa-circle-info"></i>
 												<span>Snap a portrait</span>
 											</div>
@@ -120,36 +120,38 @@
 										onmouseout="hideTooltip('camera-tooltip')"
 										onclick="takeSnapshot()"
 										data-tooltip-target='camera-tooltip'
-										class='hidden absolute shadow-md left-2 top-10 z-10 min-h-8 min-w-8 rounded-[50%] bg-red-600 hover:bg-red-500 active:bg-red-700'>
+										class='hidden absolute shadow-md left-2 top-14 z-10 min-h-8 min-w-8 rounded-[50%] bg-red-600 hover:bg-red-500 active:bg-red-700'>
 											<i class="fa-solid fa-camera text-md text-white"></i>
-											<div id='camera-tooltip' role='tooltip' class='hidden tooltip absolute w-[6rem] top-1 left-9 opacity-0 transition-opacity duration-300'>
+											<div id='camera-tooltip' role='tooltip' class='hidden tooltip absolute w-[6rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
 												<i class="fa-solid fa-circle-info"></i>
 												<span>Say cheese!</span>
 											</div>
 										</button>
 										<div id='modal-hide-when-edit' class='flex gap-4 justify-around'>
-											<label for='image-upload'>
+											<label for='image-upload' class='relative'>
 												<img id='image' 
 												onmouseover="showTooltip('image-tooltip')"
 												onmouseout="hideTooltip('image-tooltip')"
 												data-tooltip-target='image-tooltip'
 												class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'>
 												<input id='image-upload' name='image-upload' type='file'onclick='promptIfIdnoEmpty(event)' onchange="displayImgUpload(this)" class='hidden'>
-												<div id='image-tooltip' role='tooltip' class='hidden tooltip absolute w-[12rem] -bottom-12 left-3 opacity-0 transition-opacity duration-300'>
+												<div id='image-tooltip' role='tooltip' class='hidden z-50 tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
 													<i class="fa-solid fa-circle-info"></i>
 													<span>Choose a file from file picker to use as portrait.</span>
 												</div>
 											</label>
-											<img id='qrcode' 
+											<div class="relative">
+												<img id='qrcode' 
 											name='qrcode' 
 											onmouseover="showTooltip('qrcode-tooltip')"
 											onmouseout="hideTooltip('qrcode-tooltip')"
 											data-tooltip-target='qrcode-tooltip'
 											class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'>
-											<input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
-											<div id='qrcode-tooltip' role='tooltip' class='hidden tooltip absolute w-[12rem] -bottom-16 right-3 opacity-0 transition-opacity duration-300'>
-												<i class="fa-solid fa-circle-info"></i>
-												<span>This student's QRCode will appear once a portrait has been inserted.</span>
+												<input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
+												<div id='qrcode-tooltip' role='tooltip' class='z-50 hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+													<i class="fa-solid fa-circle-info"></i>
+													<span>This student's QRCode will appear once a portrait has been inserted.</span>
+												</div>
 											</div>
 										</div>
 										<div id='modal-show-when-edit' class='hidden flex gap-4'>
@@ -179,9 +181,9 @@
 									</div>
 									<div class='flex gap-4'>
 										<button type="button" 
-										onclick="cancelData(document.getElementById('edit-button'))"
+										onclick="cancelData(modalIdNo)"
 										class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'>Cancel</button>
-										<button type="submit" form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100' onclick='uploadSnapshot()'>Submit</button>
+										<button type="submit" id='student-modal-submit-btn' form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100' onclick='uploadSnapshot()'>Submit</button>
 									</div>
 								</div>
 							</form>
@@ -201,6 +203,9 @@
 		</footer>
 	</div>
 </body>
+<script type='text/javascript'>
+	const delete_student_path = "{{ url_for('delete_student') }}";
+</script>
 <script src='/static/js/webcam.min.js'></script>
 <script src='/static/js/main.js'></script>
 <script src='/static/js/qrcode.js'></script>

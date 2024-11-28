@@ -642,6 +642,10 @@ video {
   bottom: -3rem;
 }
 
+.-bottom-16 {
+  bottom: -4rem;
+}
+
 .bottom-0 {
   bottom: 0px;
 }
@@ -660,6 +664,10 @@ video {
 
 .right-28 {
   right: 7rem;
+}
+
+.right-3 {
+  right: 0.75rem;
 }
 
 .right-5 {
@@ -686,12 +694,12 @@ video {
   top: 1.25rem;
 }
 
-.right-3 {
-  right: 0.75rem;
+.left-0 {
+  left: 0px;
 }
 
-.-bottom-16 {
-  bottom: -4rem;
+.top-14 {
+  top: 3.5rem;
 }
 
 .z-10 {
@@ -767,15 +775,15 @@ video {
   height: 8rem;
 }
 
+.h-\[100vh\] {
+  height: 100vh;
+}
+
 .h-full {
   height: 100%;
 }
 
 .h-screen {
-  height: 100vh;
-}
-
-.h-\[100vh\] {
   height: 100vh;
 }
 
@@ -865,8 +873,16 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -932,6 +948,10 @@ video {
 
 .justify-self-end {
   justify-self: end;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .overflow-x-auto {

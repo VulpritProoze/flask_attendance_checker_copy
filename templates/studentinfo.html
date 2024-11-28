@@ -23,7 +23,7 @@
 					<td class='px-6 py-4 border-b'>{{ student['level'] }}</td>
 					<td class='px-6 py-4 border-b flex gap-2'>
 						<button
-						id='edit-button'
+						id="edit-button-{{ student['idno'] }}"
 						data-idno="{{ student['idno'] }}"
 						data-lastname="{{ student['lastname'] }}"
 						data-firstname="{{ student['firstname'] }}"
@@ -32,20 +32,16 @@
 						data-qrcode="{{ student['qrcode'] }}"
 						data-image="{{ student['image'] }}"
 						onclick='editStudent(this)'
-						class='active:scale-95'><i class="fas fa-cog text-lg text-yellow-600 hover:rotate-45 transition-transform ease-in-out duration-300"></i></button>
-						<form id='delete-student-form' 
-						action="{{ url_for('delete_student') }}"
-						enctype='multipart/form-data'
-						onsubmit='return promptDelete();'
-						method='post'>
-							<input id='delete-student-input' name='delete-student-input' type='hidden'>
-							<button 
-							form='delete-student-form'
-							type='submit'
-							data-idno="{{ student['idno'] }}"
-							onclick='deleteStudent(this)'
-							class='active:scale-95'><i class="fas fa-trash-alt text-lg text-red-600 hover:scale-110 transition-transform ease-in-out duration-300"></i></button>
-						</form>
+						class="active:scale-95">
+							<i class="fas fa-cog text-lg text-yellow-600 hover:rotate-45 transition-transform ease-in-out duration-300"></i>
+						</button>
+						<button 
+						type='button'
+						data-idno="{{ student['idno'] }}"
+						onclick='deleteStudent(this)'
+						class='active:scale-95'>
+							<i class="fas fa-trash-alt text-lg text-red-600 hover:scale-110 transition-transform ease-in-out duration-300"></i>
+						</button>
 					</td>
 				</tr>
 				{% endfor %}
