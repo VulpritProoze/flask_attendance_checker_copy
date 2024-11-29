@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class='text-sm text-black'>
-	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto relative'>
-		<table class='w-full table-auto text-left shadow-md'>
+	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto relative flex flex-col gap-8'>
+		<table class='w-full table-auto text-left shadow-md' id='student-info-table'>
 			<thead class='text-xs uppercase bg-blue-200'>
 				<tr>
 					<th class='px-6 py-3'>IDNO</th>
@@ -47,6 +47,7 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<span id='empty-table-span' class='hidden text-lg self-center'>There are no students ಠ╭╮ಠ...</span>
 	</div>
 </section>
 {% endblock %}

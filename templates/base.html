@@ -107,7 +107,7 @@
 										onmouseover="showTooltip('edit-image-tooltip')" 
 										onmouseout="hideTooltip('edit-image-tooltip')"
 										data-tooltip-target='edit-image-tooltip'
-										class='absolute left-2 shadow-lg top-1 z-10 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
+										class='absolute left-2 shadow-lg top-1 z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
 											<i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
 											<div id='edit-image-tooltip' role='tooltip' class='hidden z-50 tooltip absolute w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
 												<i class="fa-solid fa-circle-info"></i>
@@ -204,6 +204,8 @@
 	</div>
 </body>
 <script type='text/javascript'>
+	const index_path = "{{ url_for('index') }}";
+	const student_info_path = "{{ url_for('studentlist') }}";
 	const delete_student_path = "{{ url_for('delete_student') }}";
 </script>
 <script src='/static/js/webcam.min.js'></script>

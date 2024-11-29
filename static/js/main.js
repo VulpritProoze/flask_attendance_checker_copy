@@ -10,6 +10,40 @@ function deleteFlash(button) {
 	},300);
 }
 
+function handleLoginSubmit() {
+	const username = document.getElementById('username').value;
+	const password = document.getElementById('password').value;
+
+	if (username == '' || password == '') {
+		alert('Please fill in all fields.');
+		return false;
+	} else {
+		handleRememberMeCheck();
+		return true;
+	}
+}
+
+window.onload = function() {
+	if (window.location.pathname === index_path) {
+		const rememberedUsername = localStorage.getItem('rememberedUsername');
+		const rememberedPassword = localStorage.getItem('rememberedPassword');
+		document.getElementById('username').value = rememberedUsername;
+		document.getElementById('password').value = rememberedPassword;
+		console.log(rememberedUsername, rememberedPassword);
+	}
+}
+
+function handleRememberMeCheck() {
+	let check = document.getElementById('remember-check');
+	const username = document.getElementById('username').value;
+	const password = document.getElementById('password').value;
+
+	if (check.checked) {
+		localStorage.setItem('rememberedUsername', username);
+		localStorage.setItem('rememberedPassword', password);
+	}
+}
+
 function dropMenu() {
 	let headerBtn = document.getElementById('header-dropdown');
 	let headerBtnFlag = document.getElementById('dropdown-flag');
@@ -86,6 +120,20 @@ function isFields() {
 		return false;
 	} else {
 		return true;
+	}
+}
+
+window.onload = function() {
+	if (window.location.pathname === student_info_path) {
+		let emptyStringSpan = document.getElementById('empty-table-span');
+		const table = document.getElementById('student-info-table');
+		const rows = table.querySelectorAll('tbody tr');
+		
+		if (rows.length === 0) {
+			emptyStringSpan.classList.remove('hidden');
+		} else {
+			emptyStringSpan.classList.add('hidden');
+		}
 	}
 }
 
