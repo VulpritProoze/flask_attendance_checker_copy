@@ -15,7 +15,7 @@
 			</thead>
 			<tbody>
 				{% for student in students %}
-				<tr class='hover:bg-gray-100'>
+				<tr id='student-info-tr' class='hover:bg-gray-100'>
 					<td class='px-6 py-4 border-b'>{{ student['idno'] }}</td>
 					<td class='px-6 py-4 border-b'>{{ student['lastname'].title() }}</td>
 					<td class='px-6 py-4 border-b'>{{ student['firstname'].title() }}</td>
@@ -48,6 +48,7 @@
 			</tbody>
 		</table>
 		<span id='empty-table-span' class='hidden text-lg self-center'>There are no students ಠ╭╮ಠ...</span>
+		<button class='w-16 bg-red-400' onclick="postAttendance('3000')">CLICK ME</button>
 	</div>
 </section>
 {% endblock %}

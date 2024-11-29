@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class='text-sm text-black'>
+	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto'>
+		<table class='table-auto w-full text-left shadow-md' id='attendance-info-table'>
+			<thead class='text-xs uppercase bg-blue-200'>
+				<tr>
+					<th class='px-6 py-3'>ATTENDANCE ID</th>
+					<th class='px-6 py-3'>DATE LOGGED</th>
+					<th class='px-6 py-3'>TIME LOGGED</th>
+					<th class='px-6 py-3'>IDNO</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for attendance in attendances %}
+				<tr class='hover:bg-gray-100' id='attendance-info-tr'>
+					<td class='px-6 py-4 border-b'>{{ attendance['attendance_id'] }}</td>
+					<td class='px-6 py-4 border-b'>{{ attendance['date_logged'] }}</td>
+					<td class='px-6 py-4 border-b'>{{ attendance['time_logged'] }}</td>
+					<td class='px-6 py-4 border-b'>{{ attendance['idno'] }}</td>
+				</tr>
+				{%endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+{% endblock %}

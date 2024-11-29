@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, request, session, flash
 from flask_session import Session
 import dbhelper, os
-# qrcode, qrcode.image.svg
 
 app = Flask(__name__)
 uploadfolder:str = 'static/img/uploads/'
@@ -16,6 +15,23 @@ def get_users() -> dict:
 
 def get_students() -> dict:
 	return dbhelper.getall_records('students')
+
+def get_recentattendances() -> dict:
+	sql:str = f"""
+	SELECT s.idno, s.lastname, s.firstname, s.course, s.level, a.date_logged, a.time_logged
+	FROM students s
+	LEFT JOIN attendance a
+	  ON s.idno = a.idno
+	  AND (a.date_logged, a.time_logged) IN (
+	    SELECT MAX(date_logged), MAX(time_logged)
+	    FROM attendance
+	    WHERE idno = s.idno)
+	WHERE a.attendance_id IS NOT NULL OR a.idno IS NULL 
+	"""
+	return dbhelper.customget_records('attendance', sql)
+
+def get_attendance() -> dict:
+	return dbhelper.getall_records('attendance')
 
 @app.route('/delete_student', methods=['POST'])
 def delete_student(): 
@@ -82,6 +98,20 @@ def update_student():
 
 	return redirect('/studentlist')
 
+@app.route('/add_attendance', methods=['POST'])
+def add_attendance():
+	idno:str = request.form.get('idno')
+	time_logged:str = request.form.get('time_logged')
+	date_logged:str = request.form.get('date_logged')
+	print(idno + " " + time_logged + " " + date_logged)
+	ok:bool = False
+	try:
+		ok = dbhelper.add_record('attendance', idno=idno, time_logged=time_logged, date_logged=date_logged)
+	except Exception as e:
+		flash(f"Add Attendance: Student does not exist {e}")
+	flash("Add Attendance: Attendance added successfully.") if ok else flash("Add Attendance: Failed to add attendance.")
+	return redirect('/studentlist')
+
 @app.route('/studentlist')
 def studentlist():
 	if not session.get('name'):
@@ -94,7 +124,14 @@ def attendanceviewer():
 	if not session.get('name'):
 		return redirect('/')
 	else:
-		return render_template('attendanceviewer.html', header=True, headerTitle="Attendance Viewer", addStudentModal=True)
+		return render_template('attendanceviewer.html', header=True, headerTitle="Attendance Viewer", addStudentModal=True, attendances=get_recentattendances())
+
+@app.route('/attendancelog')
+def attendancelog():
+	if not session.get('name'):
+		return redirect('/')
+	else:
+		return render_template('attendancelog.html', header=True, headerTitle="Attendance Log", addStudentModal=True, attendances=get_attendance())
 
 @app.after_request
 def after_request(response):

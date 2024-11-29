@@ -30,30 +30,35 @@
 		<header class='text-black top-0 z-10 fixed w-full'>
 			<div class='w-full z-20 relative'>
 				<div class='bg-white py-6 px-6 border-b-2 rounded-b-md shadow-md'>
-					<div class='flex align-center justify-between gap-4'>
-						<a href="{{ url_for('studentlist') }}" class='flex gap-4'>
-							<img class='w-10 object-contain flex self-start hover:cursor-pointer' 
-						src="/static/img/bg-img/psitslogo.png" 
-						alt="psitslogo">
-							<h1 class='self-center w-full uppercase text-xl font-alte-bold'>
-								<b>
-								{% set substrings = headerTitle.split(" ") %}
-								{% for string in substrings %}
-									{% if loop.index is odd %}
-									<span class='text-blue-700'>{{ string }}</span>
-									{% else %}
-									<span class='text-blue-400'>{{ string }}</span>
-									{% endif %}
-								{% endfor %}
-								</b>
-							</h1>
-						</a>
-						<div class='flex gap-4'>
+					<div class='grid grid-cols-2 gap-4'>
+						<div class='justify-self-start'>
+							<a href="{{ url_for('studentlist') }}" class='flex gap-4'>
+								<img class='w-10 object-contain flex self-start hover:cursor-pointer' 
+							src="/static/img/bg-img/psitslogo.png" 
+							alt="psitslogo">
+								<h1 class='self-center w-full uppercase text-xl font-alte-bold'>
+									<b>
+									{% set substrings = headerTitle.split(" ") %}
+									{% for string in substrings %}
+										{% if loop.index is odd %}
+										<span class='text-blue-700'>{{ string }}</span>
+										{% else %}
+										<span class='text-blue-400'>{{ string }}</span>
+										{% endif %}
+									{% endfor %}
+									</b>
+								</h1>
+							</a>
+						</div>
+						<div class='flex gap-4 justify-self-end'>
 							<button id='header-dropdown' type='checkbox' onclick='dropMenu()' class='rounded-[50%] shadow-md bg-gray-300 min-w-10 h-10 hover:scale-105 hover:transition-scale active:scale-100'>
 								<i class="fas fa-cogs text-lg text-gray-600"></i>
 								<input type='checkbox' class='hidden' id='dropdown-flag' value='on'>
 							</button>
-							<button type='button' onclick="window.location.href='{{ url_for('logout') }}'" class='text-black text-sm py-2 rounded-2xl bg-blue-300 shadow-md w-20 hover:scale-105 active:scale-100'>Logout</button>
+							<button type='button' onclick="window.location.href='{{ url_for('logout') }}'" class='text-black text-sm py-2 rounded-2xl bg-blue-300 shadow-md w-20 h-10 hover:scale-105 active:scale-100'>Logout</button>
+						</div>
+						<div class='col-span-2 justify-self-end'>
+							<span id='timestamp'></span>
 						</div>
 					</div>
 				</div>
@@ -70,6 +75,11 @@
 							<button type='button' 
 							onclick="window.location.href='{{ url_for('attendanceviewer') }}'" 
 							class='active:scale-95'>View Attendance</button>			
+						</li>
+						<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
+							<button type='button' 
+							onclick="window.location.href='{{ url_for('attendancelog') }}'" 
+							class='active:scale-95'>Attendance Log</button>			
 						</li>
 						<li class='w-full rounded-b-md hover:bg-blue-100 px-4 py-2 text-center'>
 							<button type='button' 
@@ -183,7 +193,7 @@
 										<button type="button" 
 										onclick="cancelData(modalIdNo)"
 										class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'>Cancel</button>
-										<button type="submit" id='student-modal-submit-btn' form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100' onclick='uploadSnapshot()'>Submit</button>
+										<button type="submit" id='student-modal-submit-btn' form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100'>Submit</button>
 									</div>
 								</div>
 							</form>
@@ -207,6 +217,7 @@
 	const index_path = "{{ url_for('index') }}";
 	const student_info_path = "{{ url_for('studentlist') }}";
 	const delete_student_path = "{{ url_for('delete_student') }}";
+	const add_attendance_path = "{{ url_for('add_attendance') }}";
 </script>
 <script src='/static/js/webcam.min.js'></script>
 <script src='/static/js/main.js'></script>

@@ -10,6 +10,8 @@ def getprocess(sql:str) -> object:
 	cursor.row_factory = Row
 	data:dict = cursor.fetchall()
 	db.close()
+	for d in data:
+		print(dict(d))
 	return data
 
 def postprocess(sql:str) -> bool:
@@ -19,6 +21,10 @@ def postprocess(sql:str) -> bool:
 	db.commit()
 	db.close()
 	return True if cursor.rowcount > 0 else False
+
+def customget_records(table:str, sql) -> object:
+	print(f"Custom Get: {sql}")
+	return getprocess(sql)
 
 def getone_record(table:str, **kwargs) -> object:
 	sql:str = f"SELECT * FROM {table} WHERE {list(kwargs.keys())[0]} = '{list(kwargs.values())[0]}'"

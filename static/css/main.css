@@ -893,8 +893,8 @@ select {
   z-index: 9;
 }
 
-.m-auto {
-  margin: auto;
+.col-span-2 {
+  grid-column: span 2 / span 2;
 }
 
 .mx-auto {
@@ -966,6 +966,10 @@ select {
   height: 100vh;
 }
 
+.h-5 {
+  height: 1.25rem;
+}
+
 .min-h-8 {
   min-height: 2rem;
 }
@@ -1028,6 +1032,10 @@ select {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-16 {
+  width: 4rem;
 }
 
 .min-w-10 {
@@ -1253,6 +1261,11 @@ select {
 .bg-yellow-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(202 138 4 / var(--tw-bg-opacity, 1));
+}
+
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1));
 }
 
 .bg-opacity-10 {
