@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, render_template, redirect, request, session, flash, jsonify
 from flask_session import Session
 import dbhelper, os
 
@@ -23,9 +23,11 @@ def get_recentattendances() -> dict:
 	LEFT JOIN attendance a
 	  ON s.idno = a.idno
 	  AND (a.date_logged, a.time_logged) IN (
-	    SELECT MAX(date_logged), MAX(time_logged)
-	    FROM attendance
-	    WHERE idno = s.idno)
+	    SELECT date_logged, time_logged
+		FROM attendance
+		WHERE idno = s.idno
+		ORDER BY date_logged DESC, time_logged DESC
+		LIMIT 1)
 	WHERE a.attendance_id IS NOT NULL OR a.idno IS NULL 
 	"""
 	return dbhelper.customget_records('attendance', sql)
@@ -37,8 +39,22 @@ def get_attendance() -> dict:
 def delete_student(): 
 	try:
 		idno:str = request.form.get('idno')
-		image:str = dbhelper.getone_record('students', idno=idno)[0]['image']
+		record:dict = dict(dbhelper.getone_record('students', idno=idno)[0])
+		image:str = record['image']
+		qrcode:str = record['qrcode']
+		sql:str = f"""
+		SELECT attendance_id 
+		FROM attendance a 
+		JOIN students s ON a.idno = s.idno 
+		WHERE s.idno = {idno}
+     	"""
+		attendances:object = dbhelper.customget_records('attendance', sql)
+		for attendance in attendances:
+			attendance = dict(attendance)['attendance_id']
+			dbhelper.delete_record('attendance', attendance_id=attendance)
+
 		os.remove(image)
+		os.remove(qrcode)
 	except IndexError:
 		flash('Student Delete: idno does not exist')
 	except FileNotFoundError:
@@ -132,6 +148,13 @@ def attendancelog():
 		return redirect('/')
 	else:
 		return render_template('attendancelog.html', header=True, headerTitle="Attendance Log", addStudentModal=True, attendances=get_attendance())
+
+@app.route('/get_student', methods=['POST'])
+def get_student():
+	idno:str = request.form.get('idno')
+	student:object = dict(dbhelper.getone_record('students', idno=idno)[0])
+	print(student)
+	return jsonify(student)
 
 @app.after_request
 def after_request(response):

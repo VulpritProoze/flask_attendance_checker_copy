@@ -23,6 +23,7 @@ function handleLoginSubmit() {
 	}
 }
 
+let time = new Date();
 let timestamp_year = '';
 let timestamp_month = '';
 let timestamp_day = '';
@@ -33,26 +34,172 @@ let timestamp_date = '';
 let timestamp_time = '';
 
 // timestamp
-addEventListener('load', function() {
-	let element = document.getElementById('timestamp');
-	const time = new Date();
-	element.textContent = time;
+setInterval( function() {
+	time.setTime(time.getTime() + 1000);
 	timestamp_year = time.getFullYear();
-	timestamp_month = String(time.getMonth()).padStart(2,'0');
+	timestamp_month = String(time.getMonth() + 1).padStart(2,'0');
 	timestamp_day = String(time.getDate()).padStart(2,'0');
 	timestamp_hr = String(time.getHours()).padStart(2, '0');
 	timestamp_mins = String(time.getMinutes()).padStart(2, '0');
 	timestamp_secs = String(time.getSeconds()).padStart(2,'0');
 	timestamp_date = `${timestamp_year}/${timestamp_month}/${timestamp_day}`;
 	timestamp_time = `${timestamp_hr}:${timestamp_mins}:${timestamp_secs}`;
+	
+	let element = document.getElementById('timestamp');
+	element.textContent = `${timestamp_date} ${timestamp_time} Philippine Standard Time`;
+	
+}, 1000);
+
+addEventListener('onload', updateTimestamp());
+
+function updateTimestamp() {
+	time = new Date();
 	console.log(timestamp_date);
 	console.log(timestamp_time);
-})
+}
+
+function attendanceIsFields() {
+	const idNo = document.getElementById('attendance-idno').value;
+	const lastName = document.getElementById('attendance-lastname').value;
+	const firstName = document.getElementById('attendance-firstname').value;
+	const courseName = document.getElementById('attendance-course').value;
+	const courseLevel = document.getElementById('attendance-level').value;
+	const imageName = document.getElementById('attendance-info-image').src;
+	const qrCode = document.getElementById('attendance-info-qrcode').src;
+	if (!idNo || !lastName || !firstName || !courseName || !courseLevel || imageName == defaultImg || qrCode == defaultImg) {
+		alert('Please scan a QRCode first.');
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function submitAttendance() {
+	if (attendanceIsFields()) {
+		updateTimestamp();
+		const date = timestamp_date;
+		const time = timestamp_time;
+		const idno = document.getElementById('attendance-idno').value;
+		const kwargs = { idno:idno, date_logged:date, time_logged:time };
+		postData(add_attendance_path, kwargs);
+	}
+}
+
+function markAttendance() {
+	openAttendanceModal();
+	let qrCode = document.getElementById('attendance-info-qrcode');
+	let image = document.getElementById('attendance-info-image');
+
+	qrCode.src = defaultImg;
+	image.src = defaultImg;
+	openQrcodeScanner();
+}
+
+function openAttendanceModal() {
+	let modal = document.getElementById('attendance-modal');
+	let modalCard = document.getElementById('attendance-modal-card');
+	showModal(modal, modalCard);
+}
+
+function closeAttendanceModal() {
+	let modal = document.getElementById('attendance-modal');
+	let modalCard = document.getElementById('attendance-modal-card');
+	hideModal(modal, modalCard);
+	setTimeout( function() {
+		closeQrcodeScanner();
+		gotoAttendanceQRCodeSection();
+	}, 2000);
+}
 
 function postAttendance(idno) {
 	const kwargs = {time_logged:timestamp_time, date_logged:timestamp_date, idno:idno}
 	postData(add_attendance_path, kwargs);
 }
+
+function gotoAttendanceQRCodeSection() {
+	let qrCodeSection = document.getElementById('attendance-qrcode-section');
+	let infoSection = document.getElementById('attendance-info-section');
+
+	qrCodeSection.classList.remove('hidden');
+	infoSection.classList.add('hidden');
+
+	openQrcodeScanner();
+}
+
+function gotoAttendanceInfoSection() {
+	let qrCodeSection = document.getElementById('attendance-qrcode-section');
+	let infoSection = document.getElementById('attendance-info-section');
+
+	qrCodeSection.classList.add('hidden');
+	infoSection.classList.remove('hidden');
+
+	closeQrcodeScanner();
+}
+
+let scanner = null;
+
+function openQrcodeScanner() {
+	scanner = new Html5QrcodeScanner('qrcode-reader', {
+		qrbox: {
+			width: 350,
+			height: 250,
+		},
+		fps: 20,
+	
+	})
+	scanner.render(success);
+}
+
+function closeQrcodeScanner() {
+	scanner.clear();
+}
+
+function success(result) {
+	alert(`Scanning success! IDNO=${result}`);
+	scanner.clear();
+	gotoAttendanceInfoSection();
+	let idnoElement = document.getElementById('get-student-form-idno');
+	let idnoForm = document.getElementById('get-student-form');
+	idnoElement.value = result;
+	idnoForm.dispatchEvent(new Event('submit'));
+}
+
+document.getElementById('get-student-form').addEventListener('submit', async function(e) {
+	e.preventDefault();
+
+	const idno = document.getElementById('get-student-form-idno').value;
+
+	try {
+		const response = await fetch('/get_student', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: `idno=${encodeURIComponent(idno)}`
+		});
+		console.log(response);
+		const data = await response.json();
+		let idNo = document.getElementById('attendance-idno');
+		let lastName = document.getElementById('attendance-lastname');
+		let firstName = document.getElementById('attendance-firstname');
+		let courseName = document.getElementById('attendance-course');
+		let courseLevel = document.getElementById('attendance-level');
+		let imageName = document.getElementById('attendance-info-image');
+		let qrCode = document.getElementById('attendance-info-qrcode');
+		idNo.value = data.idno;
+		lastName.value = data.lastname;
+		firstName.value = data.firstname;
+		courseName.value = data.course;
+		courseLevel.value = data.level;
+		imageName.src = data.image;
+		qrCode.src = data.qrcode;
+
+		console.log(data);
+
+	} catch (error) {
+		console.log(error);
+	}
+})
 
 // login remember me
 addEventListener('load', function() {
@@ -105,7 +252,9 @@ function dropMenu() {
 }
 
 function closeStudentModal() {
-	hideModal();
+	let modal = document.getElementById('student-modal');
+	let modalCard = document.getElementById('student-modal-card');
+	hideModal(modal, modalCard);
 
 	let idNo = document.getElementById('idno');
 	let lastName = document.getElementById('lastname');
@@ -164,17 +313,41 @@ function substringer(str, phrase) {
     return str;
 }
 
-// student table if empty
+// table if empty
 addEventListener('load', function(){
-	if (window.location.pathname === student_info_path) {
-		let emptyStringSpan = document.getElementById('empty-table-span');
-		const table = document.getElementById('student-info-table');
-		const rows = table.querySelectorAll('tbody #student-info-tr');
+	if (window.location.pathname == student_info_path) {
+		let emptyStudentStringSpan = document.getElementById('empty-student-table-span');
+		// empty-student-table-span
+		const student = document.querySelectorAll('#student-info-table tbody tr').length;
 		
-		if (rows.length === 0) {
-			emptyStringSpan.classList.remove('hidden');
+		if (student) {
+			emptyStudentStringSpan.classList.add('hidden');
 		} else {
-			emptyStringSpan.classList.add('hidden');
+			emptyStudentStringSpan.classList.remove('hidden');
+		}
+	}
+
+	if (window.location.pathname == attendance_viewer_path) {
+		let emptyAttendanceViewerSpan = document.getElementById('empty-attendance-viewer-table-span');
+		// empty-attendance-viewer-table-span
+		const attendanceViewer = document.querySelectorAll('#attendance-viewer-table tbody tr').length;
+
+		if (attendanceViewer) {
+			emptyAttendanceViewerSpan.classList.add('hidden');
+		} else {
+			emptyAttendanceViewerSpan.classList.remove('hidden');
+		}
+	}
+
+	if (window.location.pathname == attendance_log_path) {
+		let emptyAttendanceLogSpan = document.getElementById('empty-attendance-log-table-span');
+		// empty-attendance-log-table-span
+		const attendanceLog = document.querySelectorAll('#attendance-log-table tbody tr').length;
+
+		if (attendanceLog) {
+			emptyAttendanceLogSpan.classList.add('hidden');
+		} else {
+			emptyAttendanceLogSpan.classList.remove('hidden');
 		}
 	}
 });
@@ -182,7 +355,7 @@ addEventListener('load', function(){
 function deleteStudent(button) {
 	const idno = button.dataset.idno;
 	console.log(idno)
-	const ok = confirm('Are you sure you want to delete this student?');
+	const ok = confirm("Are you sure you want to delete this student? All of the student's relevant attendance records will also be deleted. This is currently NOT RECOVERABLE.");
 	if (ok) {
 		const path = delete_student_path;
 		const kwargs = {idno:idno};
@@ -210,7 +383,9 @@ function postData(path, kwargs, method='post') {
 }
 
 function addStudent() {
-	showModal();
+	let modal = document.getElementById('student-modal');
+	let modalCard = document.getElementById('student-modal-card');
+	showModal(modal, modalCard);
 	document.getElementById('edit-add-flag').value = 'add';
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
 
@@ -220,7 +395,9 @@ function addStudent() {
 }
 
 function editStudent(button) {
-	showModal();
+	let modal = document.getElementById('student-modal');
+	let modalCard = document.getElementById('student-modal-card');
+	showModal(modal, modalCard);
 	let editFlag = document.getElementById('edit-add-flag');
 	editFlag.value = 'edit';
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
@@ -252,16 +429,20 @@ function editStudent(button) {
 	}
 }
 
-function toggleEditImage() {
-	let editFlag = document.getElementById('modal-edit-flag');
+function toggleSwitchToCam() {
+	let editFlag = document.getElementById('switch-to-cam-flag');
 	let cameraBtn = document.getElementById('camera-button');
 
-	if (!editFlag.checked) {
+	if (editFlag.checked == true) {
 		document.getElementById('modal-hide-when-edit').classList.add('hidden');
 		document.getElementById('modal-show-when-edit').classList.remove('hidden');
 		cameraBtn.classList.remove('hidden');
-		Webcam.attach( '#webcam' );
-		setWebcam();
+		try {
+			Webcam.attach( '#webcam' );
+			setWebcam();
+		} catch (err) {
+			console.log("toggleSwitchToCam: ", err);
+		}
 	} else {
 		document.getElementById('modal-hide-when-edit').classList.remove('hidden');
 		document.getElementById('modal-show-when-edit').classList.add('hidden');
@@ -270,6 +451,45 @@ function toggleEditImage() {
 	}
 
 	editFlag.checked = !editFlag.checked;
+}
+
+function setWebcam() {
+	const webcamContainer = document.getElementById('webcam');
+	const height = webcamContainer.offsetHeight;
+	const width = webcamContainer.offsetWidth;
+	console.log("w: " + width)
+	console.log("h: " + height)
+	Webcam.set({
+		width: width,
+		height: height
+	})
+}
+
+function takeSnapshot() {
+	const idno = document.getElementById('idno').value;
+	if (idno != '') {
+		Webcam.snap( function(data_uri) {
+			document.getElementById('webcam-result').innerHTML = '<img src="' + data_uri + '"/>';
+		})
+		document.getElementById('image').src = document.getElementById('webcam-result').querySelector('img').src;
+
+		const idno = document.getElementById('idno').value;
+		createQRCode(idno);
+		
+		console.log('attempting to upload snap...')
+		let webcamResultElement = document.getElementById('webcam-result').querySelector('img');
+		let webcamInputElement = document.getElementById('image-upload');
+		base64ToFileStorageObject(webcamResultElement.src, "webcam_snapshot", webcamInputElement);	
+		console.log('webcam: ', webcamInputElement.value);
+	} else {
+		alert("Please state the student's idno first before snapping a picture.");
+	}
+}
+
+function closeWebcam() {
+	if (Webcam.live) {
+		Webcam.reset()
+	}
 }
 
 // Revert changes in "Edit" mode or remove new data inputted in modal in "Add" mode
@@ -334,10 +554,7 @@ function cancelData(id) {
 	// console.log('img-upload  ', imageUploadSrc.value)
 }
 
-function showModal() {
-	let modal = document.getElementById('student-modal');
-	let modalCard = document.getElementById('student-modal-card');
-
+function showModal(modal, modalCard) {
 	modal.classList.remove('hidden');
 
 	// Delay starting transitions by a bit after removing 'hidden' so
@@ -352,10 +569,7 @@ function showModal() {
 	}, 100);
 }
 
-function hideModal() {
-	let modal = document.getElementById('student-modal');
-	let modalCard = document.getElementById('student-modal-card');
-
+function hideModal(modal, modalCard) {
 	modal.classList.remove('bg-black/40');
 	modal.classList.add('bg-black/0');
 	modalCard.classList.remove('translate-y-0');
@@ -475,44 +689,4 @@ function createQRCode(idno) {
 	const filename = 'qrcode' + idno;
 	base64ToFileStorageObject(qrcodeDisplay.src, filename, qrcodeInput);
 	console.log('qrcode: ', qrcodeInput.value);
-}
-
-const webcamContainer = document.getElementById('webcam');
-
-function setWebcam() {
-	var height = webcamContainer.offsetHeight;
-	var width = webcamContainer.offsetWidth;
-	console.log("w: " + width)
-	console.log("h: " + height)
-	Webcam.set({
-		width: width,
-		height: height
-	})
-}
-
-function takeSnapshot() {
-	const idno = document.getElementById('idno').value;
-	if (idno != '') {
-		Webcam.snap( function(data_uri) {
-			document.getElementById('webcam-result').innerHTML = '<img src="' + data_uri + '"/>';
-		})
-		document.getElementById('image').src = document.getElementById('webcam-result').querySelector('img').src;
-
-		const idno = document.getElementById('idno').value;
-		createQRCode(idno);
-		
-		console.log('attempting to upload snap...')
-		let webcamResultElement = document.getElementById('webcam-result').querySelector('img');
-		let webcamInputElement = document.getElementById('image-upload');
-		base64ToFileStorageObject(webcamResultElement.src, "webcam_snapshot", webcamInputElement);	
-		console.log('webcam: ', webcamInputElement.value);
-	} else {
-		alert("Please state the student's idno first before snapping a picture.");
-	}
-}
-
-function closeWebcam() {
-	if (Webcam.live) {
-		Webcam.reset()
-	}
 }

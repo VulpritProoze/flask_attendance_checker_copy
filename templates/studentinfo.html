@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class='text-sm text-black'>
-	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto relative flex flex-col gap-8'>
+	<div class='px-16 overflow-x-auto relative flex flex-col gap-8'>
 		<table class='w-full table-auto text-left shadow-md' id='student-info-table'>
 			<thead class='text-xs uppercase bg-blue-200'>
 				<tr>
@@ -13,9 +13,9 @@
 					<th class='px-6 py-3'>Action</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id='student-info-tbody'>
 				{% for student in students %}
-				<tr id='student-info-tr' class='hover:bg-gray-100'>
+				<tr class='hover:bg-gray-100'>
 					<td class='px-6 py-4 border-b'>{{ student['idno'] }}</td>
 					<td class='px-6 py-4 border-b'>{{ student['lastname'].title() }}</td>
 					<td class='px-6 py-4 border-b'>{{ student['firstname'].title() }}</td>
@@ -47,8 +47,9 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		<span id='empty-table-span' class='hidden text-lg self-center'>There are no students ಠ╭╮ಠ...</span>
-		<button class='w-16 bg-red-400' onclick="postAttendance('3000')">CLICK ME</button>
+		<span id='empty-student-table-span' class='empty-table-span hidden text-lg self-center'>
+			There are no students ಠ╭╮ಠ...
+		</span>
 	</div>
 </section>
 {% endblock %}

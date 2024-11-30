@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class='text-sm text-black'>
-	<div class='min-h-[20rem] px-16 py-40 overflow-x-auto'>
-		<table class='table-auto w-full text-left shadow-md' id='attendance-info-table'>
+	<div class='min-h-[20rem] px-16 overflow-x-auto flex flex-col gap-4'>
+		<table class='table-auto w-full text-left shadow-md' id='attendance-viewer-table'>
 			<thead class='text-xs uppercase bg-blue-200'>
 				<tr>
 					<th class='px-6 py-3'>IDNO</th>
@@ -13,9 +13,9 @@
 					<th class='px-6 py-3'>TIME LOGGED</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id='attendance-viewer-tbody'>
 				{% for attendance in attendances %}
-				<tr class='hover:bg-gray-100' id='attendance-info-tr'>
+				<tr class='hover:bg-gray-100'>
 					<td class='px-6 py-4 border-b'>{{ attendance['idno'] }}</td>
 					<td class='px-6 py-4 border-b'>{{ attendance['lastname'].title() }}</td>
 					<td class='px-6 py-4 border-b'>{{ attendance['firstname'].title() }}</td>
@@ -32,6 +32,9 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<span id='empty-attendance-viewer-table-span' class='empty-table-spans hidden text-lg self-center'>
+			There are no attendances ಠ╭╮ಠ...
+		</span>
 	</div>
 </section>
 {% endblock %}
