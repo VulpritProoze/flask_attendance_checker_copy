@@ -176,6 +176,17 @@ function success(result) {
 	idnoForm.dispatchEvent(new Event('submit'));
 }
 
+addEventListener('load', function() {
+	try {
+		state = scanner.getState();
+		if (state) {
+			scanner.clear();
+		}
+	} catch (err) {
+		console.log("QRCode scanner does not exist");
+	}
+})
+
 document.getElementById('get-student-form').addEventListener('submit', async function(e) {
 	e.preventDefault();
 

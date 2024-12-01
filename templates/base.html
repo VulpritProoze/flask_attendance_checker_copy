@@ -233,23 +233,58 @@
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>IDNO</label>
-								<input type='number' name='idno' id='idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly required>
+								<input 
+								type='number' 
+								name='idno' 
+								id='idno' 
+								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+								maxlength="10"
+								readonly 
+								required
+								>
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>LASTNAME</label>
-								<input type='text' name='lastname' id='lastname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' required>
+								<input 
+								type='text' 
+								name='lastname' 
+								id='lastname' 
+								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+								maxlength="20"
+								required
+								>
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>FIRSTNAME</label>
-								<input type='text' name='firstname' id='firstname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' required>
+								<input 
+								type='text' 
+								name='firstname' 
+								id='firstname' 
+								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+								maxlength="20"
+								required
+								>
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>COURSE</label>
-								<input type='text' name='course' id='course' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' required>
+								<input 
+								type='text' 
+								name='course' 
+								id='course' 
+								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+								maxlength="20"
+								required
+								>
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>LEVEL</label>
-								<input type='text' name='level' id='level' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' required>
+								<input 
+								type='number' 
+								name='level' 
+								id='level' 
+								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+								maxlength="10"
+								required>
 							</div>
 							<div class='flex gap-4'>
 								<button 
@@ -320,23 +355,48 @@
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>IDNO</label>
-							<input type='number' id='attendance-idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input 
+							type='number' 
+							id='attendance-idno' 
+							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+							readonly
+							>
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>LASTNAME</label>
-							<input type='text' id='attendance-lastname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input 
+							type='text' 
+							id='attendance-lastname' 
+							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+							readonly
+							>
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>FIRSTNAME</label>
-							<input type='text' id='attendance-firstname' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input 
+							type='text' 
+							id='attendance-firstname' 
+							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+							readonly
+							>
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>COURSE</label>
-							<input type='text' id='attendance-course' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input 
+							type='text' 
+							id='attendance-course' 
+							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+							readonly
+							>
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>LEVEL</label>
-							<input type='text' id='attendance-level' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input 
+							type='number' 
+							id='attendance-level' 
+							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+							readonly
+							>
 						</div>	
 						<button 
 						onclick="submitAttendance()"

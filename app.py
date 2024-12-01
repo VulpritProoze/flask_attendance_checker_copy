@@ -41,26 +41,31 @@ def delete_student():
 		idno:str = request.form.get('idno')
 		record:dict = dict(dbhelper.getone_record('students', idno=idno)[0])
 		image:str = record['image']
-		qrcode:str = record['qrcode']
-		sql:str = f"""
-		SELECT attendance_id 
-		FROM attendance a 
-		JOIN students s ON a.idno = s.idno 
-		WHERE s.idno = {idno}
-     	"""
-		attendances:object = dbhelper.customget_records('attendance', sql)
-		for attendance in attendances:
-			attendance = dict(attendance)['attendance_id']
-			dbhelper.delete_record('attendance', attendance_id=attendance)
-
+		
 		os.remove(image)
-		os.remove(qrcode)
-	except IndexError:
-		flash('Student Delete: idno does not exist')
-	except FileNotFoundError:
-		flash('Student Delete: Something went wrong with deleting image.')
 	except Exception as e:
 		flash(f'Student Delete: {e}')
+  
+	try:
+		qrcode:str = record['qrcode']
+		os.remove(qrcode)
+	except Exception as e:
+		print(f"student delete: {e}")
+		
+	try:
+		sql:str = f"""
+				SELECT idno 
+				FROM attendance 
+				WHERE idno = '{idno}'
+				"""
+		attendance = dict(dbhelper.customget_records('attendance', sql)[0])['idno']
+		ok_attendance:bool = False
+		ok_attendance = dbhelper.delete_record('attendance', idno=attendance)
+		flash(f"Student Delete: Attendance records of respective student deleted successfully.") if ok_attendance else flash(f"Student Delete: Attendance records of respective student failed to delete.")
+	except IndexError:
+		print(f"{idno} has no attendance records")
+	
+
 	ok:bool = False
 	ok = dbhelper.delete_record('students', idno=idno)
 	flash(f'Student Delete: Student deleted successfully.') if ok else flash(f'Student Delete: Student failed to delete.')
