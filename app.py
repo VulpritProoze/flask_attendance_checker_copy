@@ -97,6 +97,8 @@ def update_student():
 	print('image path:  ', image)
 	print('qr path:  ', qrcode)
 
+	if not os.path.exists(uploadfolder):
+		os.makedirs(uploadfolder)
 	if isUpdateNotAdd:
 		if imagefile.filename != '' and qrcodefile.filename != '':
 			try:
