@@ -99,8 +99,11 @@ def update_student():
 
 	if isUpdateNotAdd:
 		if imagefile.filename != '' and qrcodefile.filename != '':
-			imagefile.save(image)
-			qrcodefile.save(qrcode)
+			try:
+				imagefile.save(image)
+				qrcodefile.save(qrcode)
+			except Exception as e:
+				flash(f"Student Add: {e}")				
 			ok = dbhelper.update_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, qrcode=qrcode, image=image)
 		else:
 			flash('Student Update: Image not saved')
@@ -108,10 +111,14 @@ def update_student():
 	else:
 		try:
 			ok = dbhelper.add_record('students', idno=idno, lastname=lastname, firstname=firstname, course=course, level=level, qrcode=qrcode, image=image)		
-		except Exception:
+		except:
 			flash('Student Add: Student cannot be added because idno already exists.')
-		imagefile.save(image)
-		qrcodefile.save(qrcode)
+		
+		try:
+			imagefile.save(image)
+			qrcodefile.save(qrcode)
+		except Exception as e:
+			flash(f'Student Add: {e}')
 
 	message_header:str = 'Update' if isUpdateNotAdd else 'Add'
 	message_body:str = 'updated' if isUpdateNotAdd else 'added'
