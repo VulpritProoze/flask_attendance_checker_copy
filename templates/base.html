@@ -96,12 +96,20 @@
 							<li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
 								<button type='button' 
 								onclick="markAttendance()" 
-								class='active:scale-95'>Mark Attendance</button>			
+								class='active:scale-95'
+								>
+									<i class="fa-solid fa-check-to-slot text-lg text-gray-600 pointer-events-none"></i>
+									<span class="ml-1">Mark Attendance</span>
+								</button>			
 							</li>
 							<li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
 								<button type='button' 
 								onclick="addStudent()" 
-								class='active:scale-95'>Add Student</button>			
+								class='active:scale-95'
+								>
+									<i class="fa-solid fa-user-plus text-lg text-gray-600 pointer-events-none"></i>
+									<span class="ml-1">Add Student</span>
+								</button>			
 							</li>
 							<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
 								<button type='button' 
@@ -123,7 +131,7 @@
 				</div>
 			</header>
 			{% endif %}
-			<main id='main-body' class='h-[50rem] py-44 max-md:py-56 max-sm:py-64'>
+			<main id='main-body' class='py-44 max-md:py-56 max-sm:py-64'>
 				{% block content %}
 				{% endblock %}
 				{% if addStudentModal %}
@@ -145,6 +153,18 @@
 					<button class='absolute top-5 right-5 active:scale-90' onclick='closeStudentModal()'>
 						<i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
 					</button>
+					<div id="add-student-title">
+						<h1 class="uppercase text-xl text-center font-alte-bold">
+							<span class="text-blue-700">Add</span>
+							<span class="text-blue-400">Student</span>
+						</h1>
+					</div>
+					<div id="edit-student-title">
+						<h1 class="uppercase text-xl text-center font-alte-bold">
+							<span class="text-blue-700">Edit</span>
+							<span class="text-blue-400">Student</span>
+						</h1>
+					</div>
 					<form 
 					id='student-modal-form' 
 					method='post'
@@ -194,10 +214,11 @@
 									</label>
 									<div class="relative">
 										<img id='qrcode' 
-									name='qrcode' 
-									onmouseover="showTooltip('qrcode-tooltip')"
-									onmouseout="hideTooltip('qrcode-tooltip')"
-									class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'>
+										name='qrcode' 
+										onmouseover="showTooltip('qrcode-tooltip')"
+										onmouseout="hideTooltip('qrcode-tooltip')"
+										class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'
+										>
 										<input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
 										<div id='qrcode-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
 											<i class="fa-solid fa-circle-info"></i>
@@ -212,7 +233,7 @@
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>IDNO</label>
-								<input type='text' name='idno' id='idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly required>
+								<input type='number' name='idno' id='idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly required>
 							</div>
 							<div class='flex flex-col flex-grow'>
 								<label>LASTNAME</label>
@@ -231,10 +252,21 @@
 								<input type='text' name='level' id='level' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' required>
 							</div>
 							<div class='flex gap-4'>
-								<button type="button" 
+								<button 
+								type="button" 
 								onclick="cancelData(modalIdNo)"
-								class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'>Cancel</button>
-								<button type="submit" id='student-modal-submit-btn' form='student-modal-form' class='text-black text-sm py-2 rounded-xl bg-blue-300 shadow-md w-1/2 hover:scale-105 active:scale-100'>Submit</button>
+								class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'
+								>
+									Cancel
+								</button>
+								<button 
+								type="submit" 
+								id='student-modal-submit-btn' 
+								form='student-modal-form' 
+								class='text-white text-sm py-2 rounded-xl bg-blue-400 shadow-md w-1/2 hover:scale-105 active:scale-100'
+								>
+									Submit
+								</button>
 							</div>
 						</div>
 					</form>
@@ -250,6 +282,12 @@
 					<form id="get-student-form" class="hidden">
 						<input type="hidden" id="get-student-form-idno" name="idno">
 					</form>
+					<div>
+						<h1 class="uppercase text-xl text-center font-alte-bold">
+							<span class="text-blue-700">Mark</span>
+							<span class="text-blue-400">Attendance</span>
+						</h1>
+					</div>
 					<div 
 					id="attendance-info-section"
 					class='hidden flex gap-4 flex-col h-full'
@@ -282,7 +320,7 @@
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>IDNO</label>
-							<input type='text' id='attendance-idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
+							<input type='number' id='attendance-idno' class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' readonly>
 						</div>
 						<div class='flex flex-col flex-grow'>
 							<label>LASTNAME</label>

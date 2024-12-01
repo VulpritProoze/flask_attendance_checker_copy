@@ -58,6 +58,18 @@ function updateTimestamp() {
 	console.log(timestamp_time);
 }
 
+function downloadQR(button) {
+	const idno = button.dataset.idno;
+	const qrcode = button.dataset.qrcode;
+
+	const link = document.createElement('a');
+	link.href = qrcode;
+	link.download = `qrcode_${idno}.png`;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+}
+
 function attendanceIsFields() {
 	const idNo = document.getElementById('attendance-idno').value;
 	const lastName = document.getElementById('attendance-lastname').value;
@@ -385,10 +397,16 @@ function postData(path, kwargs, method='post') {
 function addStudent() {
 	let modal = document.getElementById('student-modal');
 	let modalCard = document.getElementById('student-modal-card');
+	
 	showModal(modal, modalCard);
 	document.getElementById('edit-add-flag').value = 'add';
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
 
+	let addStudentTitle = document.getElementById('add-student-title');
+	let editStudentTitle = document.getElementById('edit-student-title');
+	addStudentTitle.classList.remove('hidden');
+	editStudentTitle.classList.add('hidden');
+	
 	document.getElementById('idno').readOnly = false;
 	document.getElementById('image').src = defaultImg;
 	document.getElementById('qrcode').src = defaultImg;
@@ -398,10 +416,16 @@ function editStudent(button) {
 	let modal = document.getElementById('student-modal');
 	let modalCard = document.getElementById('student-modal-card');
 	showModal(modal, modalCard);
+
 	let editFlag = document.getElementById('edit-add-flag');
 	editFlag.value = 'edit';
 	console.log('EDIT ADD FLAG: ' + document.getElementById('edit-add-flag').value);
 	modalIdNo = button.dataset.idno;
+
+	let addStudentTitle = document.getElementById('add-student-title');
+	let editStudentTitle = document.getElementById('edit-student-title');
+	addStudentTitle.classList.add('hidden');
+	editStudentTitle.classList.remove('hidden');
 
 	const idno = button.dataset.idno;
 	const lastname = button.dataset.lastname;
