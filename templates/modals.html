@@ -1,0 +1,280 @@
+<section id='student-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
+    <div class='text-sm flex h-full relative justify-center items-center'>
+        <div id='student-modal-card' class='w-1/2 max-md:w-[80%] p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
+            <button class='absolute top-5 right-5 active:scale-90' onclick='closeStudentModal()'>
+                <i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
+            </button>
+            <div id="add-student-title">
+                <h1 class="uppercase text-xl text-center font-alte-bold">
+                    <span class="text-blue-700">Add</span>
+                    <span class="text-blue-400">Student</span>
+                </h1>
+            </div>
+            <div id="edit-student-title">
+                <h1 class="uppercase text-xl text-center font-alte-bold">
+                    <span class="text-blue-700">Edit</span>
+                    <span class="text-blue-400">Student</span>
+                </h1>
+            </div>
+            <form 
+            id='student-modal-form' 
+            method='post'
+            action="{{ url_for('update_student') }}"
+            enctype='multipart/form-data'
+            onsubmit='return isFields();' 
+            class='h-full'>
+                <div class='flex flex-col items-stretch h-full pt-2 gap-3'>
+                    <div class='w-full relative mb-2 flex flex-col'>
+                        <input id='edit-add-flag' name='edit-add-flag' type='hidden' value='add'>
+                        <input id='switch-to-cam-flag' type='checkbox' class='hidden' checked=false>
+                        <button 
+                        type='button' 
+                        onclick='toggleSwitchToCam()'
+                        onmouseover="showTooltip('edit-image-tooltip')" 
+                        onmouseout="hideTooltip('edit-image-tooltip')"
+                        class='absolute left-2 shadow-lg top-1 z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
+                            <i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
+                            <div id='edit-image-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Snap a portrait</span>
+                            </div>
+                        </button>
+                        <button type='button' 
+                        id='camera-button'
+                        onmouseover="showTooltip('camera-tooltip')"
+                        onmouseout="hideTooltip('camera-tooltip')"
+                        onclick="takeSnapshot()"
+                        class='hidden absolute shadow-md left-2 top-14 z-10 min-h-8 min-w-8 rounded-[50%] bg-red-600 hover:bg-red-500 active:bg-red-700'>
+                            <i class="fa-solid fa-camera text-md text-white pointer-events-none"></i>
+                            <div id='camera-tooltip' class='hidden tooltip w-[6rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Say cheese!</span>
+                            </div>
+                        </button>
+                        <div id='modal-hide-when-edit' class='flex gap-4 justify-around'>
+                            <label for='image-upload' class='relative'>
+                                <img id='image' 
+                                onmouseover="showTooltip('image-tooltip')"
+                                onmouseout="hideTooltip('image-tooltip')"
+                                class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'>
+                                <input id='image-upload' name='image-upload' type='file'onclick='promptIfIdnoEmpty(event)' onchange="displayImgUpload(this)" class='hidden'>
+                                <div id='image-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>Choose a file from file picker to use as portrait.</span>
+                                </div>
+                            </label>
+                            <div class="relative">
+                                <img id='qrcode' 
+                                name='qrcode' 
+                                onmouseover="showTooltip('qrcode-tooltip')"
+                                onmouseout="hideTooltip('qrcode-tooltip')"
+                                class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'
+                                >
+                                <input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
+                                <div id='qrcode-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>This student's QRCode will appear once a portrait has been inserted.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id='modal-show-when-edit' class='hidden flex gap-4'>
+                            <div id='webcam' class='w-[50%] h-32 bg-black'></div>
+                            <div id='webcam-result' class='w-[50%] h-32 bg-black'></div>
+                        </div>
+                    </div>
+                    <div class='flex flex-col flex-grow'>
+                        <label>IDNO</label>
+                        <input 
+                        type='number' 
+                        name='idno' 
+                        id='idno' 
+                        class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                        maxlength="10"
+                        readonly 
+                        required
+                        >
+                    </div>
+                    <div class='flex flex-col flex-grow'>
+                        <label>LASTNAME</label>
+                        <input 
+                        type='text' 
+                        name='lastname' 
+                        id='lastname' 
+                        class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                        maxlength="20"
+                        required
+                        >
+                    </div>
+                    <div class='flex flex-col flex-grow'>
+                        <label>FIRSTNAME</label>
+                        <input 
+                        type='text' 
+                        name='firstname' 
+                        id='firstname' 
+                        class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                        maxlength="20"
+                        required
+                        >
+                    </div>
+                    <div class='flex flex-col flex-grow'>
+                        <label>COURSE</label>
+                        <input 
+                        type='text' 
+                        name='course' 
+                        id='course' 
+                        class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                        maxlength="20"
+                        required
+                        >
+                    </div>
+                    <div class='flex flex-col flex-grow'>
+                        <label>LEVEL</label>
+                        <input 
+                        type='number' 
+                        name='level' 
+                        id='level' 
+                        class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                        maxlength="10"
+                        required>
+                    </div>
+                    <div class='flex gap-4'>
+                        <button 
+                        type="button" 
+                        onclick="cancelData(modalIdNo)"
+                        class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                        type="submit" 
+                        id='student-modal-submit-btn' 
+                        form='student-modal-form' 
+                        class='text-white text-sm py-2 rounded-xl bg-blue-400 shadow-md w-1/2 hover:scale-105 active:scale-100'
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<section id='attendance-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
+    <div class='text-sm flex relative justify-center items-center'>
+        <div id='attendance-modal-card' class='w-1/2 max-md:w-[80%] h-full p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
+            <button class='absolute top-5 right-5 active:scale-90' onclick='closeAttendanceModal()'>
+                <i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
+            </button>
+            <form id="get-student-form" class="hidden">
+                <input type="hidden" id="get-student-form-idno" name="idno">
+            </form>
+            <div>
+                <h1 class="uppercase text-xl text-center font-alte-bold">
+                    <span class="text-blue-700">Mark</span>
+                    <span class="text-blue-400">Attendance</span>
+                </h1>
+            </div>
+            <div 
+            id="attendance-info-section"
+            class='hidden flex gap-4 flex-col h-full'
+            >
+                <div class="relative flex gap-4">
+                    <div class="flex justify-around w-full">
+                        <img 
+                        id="attendance-info-image"
+                        src=""
+                        class="h-32 rounded-md hover:ring-1 hover:ring-blue-300"
+                        >
+                        <img 
+                        id="attendance-info-qrcode"
+                        src=""
+                        class="h-32 rounded-md hover:ring-1 hover:ring-blue-300"
+                        >
+                    </div>
+                    <button 
+                    type='button' 
+                    onclick='gotoAttendanceQRCodeSection()'
+                    onmouseover="showTooltip('info-section-tooltip')" 
+                    onmouseout="hideTooltip('info-section-tooltip')"
+                    class='absolute left-2 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
+                        <i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
+                        <div id='info-section-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Scan another QRCode</span>
+                        </div>
+                    </button>
+                </div>
+                <div class='flex flex-col flex-grow'>
+                    <label>IDNO</label>
+                    <input 
+                    type='number' 
+                    id='attendance-idno' 
+                    class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                    readonly
+                    >
+                </div>
+                <div class='flex flex-col flex-grow'>
+                    <label>LASTNAME</label>
+                    <input 
+                    type='text' 
+                    id='attendance-lastname' 
+                    class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                    readonly
+                    >
+                </div>
+                <div class='flex flex-col flex-grow'>
+                    <label>FIRSTNAME</label>
+                    <input 
+                    type='text' 
+                    id='attendance-firstname' 
+                    class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                    readonly
+                    >
+                </div>
+                <div class='flex flex-col flex-grow'>
+                    <label>COURSE</label>
+                    <input 
+                    type='text' 
+                    id='attendance-course' 
+                    class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                    readonly
+                    >
+                </div>
+                <div class='flex flex-col flex-grow'>
+                    <label>LEVEL</label>
+                    <input 
+                    type='number' 
+                    id='attendance-level' 
+                    class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+                    readonly
+                    >
+                </div>	
+                <button 
+                onclick="submitAttendance()"
+                class='w-40 py-2 px-2 self-end bg-green-400 rounded-md shadow-md text-white'>
+                    <i class="fa-solid fa-check text-md text-white pointer-events-none"></i>
+                    <span>Mark Attendance</span>
+                </button>
+            </div>
+            <div 
+            id="attendance-qrcode-section" 
+            class="flex justify-center h-[75%] relative">
+                <div id='qrcode-reader' class='bg-gray-300 w-full h-full mt-2 self-center'>
+                </div>
+                <button 
+                type='button' 
+                onclick='gotoAttendanceInfoSection()'
+                onmouseover="showTooltip('qr-section-tooltip')" 
+                onmouseout="hideTooltip('qr-section-tooltip')"
+                class='absolute left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-blue-500 hover:bg-blue-400 active:bg-blue-600'
+                >
+                    <i class="fa-solid fa-arrow-left text-md text-white pointer-events-none"></i>
+                    <div id='qr-section-tooltip' class='hidden tooltip w-[5rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Go back</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

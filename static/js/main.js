@@ -1,4 +1,3 @@
-const defaultImg = 'static/img/bg-img/personicon.svg';
 let modalIdNo = '';		// updated within editStudent()
 
 function deleteFlash(button) {
@@ -21,41 +20,6 @@ function handleLoginSubmit() {
 		handleRememberMeCheck();
 		return true;
 	}
-}
-
-let time = new Date();
-let timestamp_year = '';
-let timestamp_month = '';
-let timestamp_day = '';
-let timestamp_hr = '';
-let timestamp_mins = '';
-let timestamp_secs = '';
-let timestamp_date = '';
-let timestamp_time = '';
-
-// timestamp
-setInterval( function() {
-	time.setTime(time.getTime() + 1000);
-	timestamp_year = time.getFullYear();
-	timestamp_month = String(time.getMonth() + 1).padStart(2,'0');
-	timestamp_day = String(time.getDate()).padStart(2,'0');
-	timestamp_hr = String(time.getHours()).padStart(2, '0');
-	timestamp_mins = String(time.getMinutes()).padStart(2, '0');
-	timestamp_secs = String(time.getSeconds()).padStart(2,'0');
-	timestamp_date = `${timestamp_year}/${timestamp_month}/${timestamp_day}`;
-	timestamp_time = `${timestamp_hr}:${timestamp_mins}:${timestamp_secs}`;
-	
-	let element = document.getElementById('timestamp');
-	element.textContent = `${timestamp_date} ${timestamp_time} Philippine Standard Time`;
-	
-}, 1000);
-
-addEventListener('onload', updateTimestamp());
-
-function updateTimestamp() {
-	time = new Date();
-	console.log(timestamp_date);
-	console.log(timestamp_time);
 }
 
 function downloadQR(button) {
@@ -163,7 +127,11 @@ function openQrcodeScanner() {
 }
 
 function closeQrcodeScanner() {
-	scanner.clear();
+	try {
+		scanner.clear();
+	} catch(err) {
+		console.log('QRCode not set up. ', err);
+	}
 }
 
 function success(result) {
@@ -177,13 +145,16 @@ function success(result) {
 }
 
 addEventListener('load', function() {
-	try {
-		state = scanner.getState();
-		if (state) {
-			scanner.clear();
+	if (this.window.location.pathname != index_path) {
+		try {
+			state = scanner.getState();
+			if (state) {
+				scanner.clear();
+			}
+			console.log('Scanner cleared!')
+		} catch (err) {
+			console.log("QRCode scanner does not exist");
 		}
-	} catch (err) {
-		console.log("QRCode scanner does not exist");
 	}
 })
 
@@ -220,13 +191,14 @@ document.getElementById('get-student-form').addEventListener('submit', async fun
 		console.log(data);
 
 	} catch (error) {
+		alert('QrCode Scanning: Student does not exist! Please scan another.')
 		console.log(error);
 	}
 })
 
 // login remember me
 addEventListener('load', function() {
-	if (window.location.pathname === index_path) {
+	if (window.location.pathname === admin_login_path) {
 		const rememberedUsername = localStorage.getItem('rememberedUsername');
 		const rememberedPassword = localStorage.getItem('rememberedPassword');
 		document.getElementById('username').value = rememberedUsername;

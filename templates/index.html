@@ -1,54 +1,145 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section class='w-full px-20 text-white'>
-	<div class='grid grid-cols-2 max-md:grid-rows-2 max-md:grid-cols-1'>
-		<div class='w-full justify-self-start flex gap-x-8'>
-			<img class='w-32 max-md:hidden object-contain flex self-start' src="/static/img/bg-img/psitslogo.png" alt="psitslogo">
-			<div class='flex justify-center flex-col'>
-				<h1 class='mb-6 text-5xl max-md:text-3xl max-lg:text-3xl flex flex-col max-md:items-center leading-[3rem] font-alte-bold tracking-wide uppercase'>
-					<span class='text-blue-500'>Student</span> 
-					<span class='text-blue-300'>Attendance</span> 
-					<span class='text-blue-500'>Checker</span> 
-					<span class='text-blue-300'>v1.0</span>
-				</h1>
-				<p class='font-alte-regular max-md:text-center'>
-					Browse for student attendance, their performance, and track their attendance sheet.
-				</p>
-				</div>
-		</div>
-		<div class='w-[60%] max-md:w-[90%] justify-self-end max-md:justify-self-center px-4 py-6 flex flex-col bg-white border-gray-600 border bg-opacity-10 rounded-lg shadow-lg backdrop-blur-sm'>
-			<h2 class='self-center'>Login</h2>
-			<form class='flex flex-col w-full gap-5 text-sm' 
-			action="{{ url_for('login') }}" 
-			enctype='multipart/form-data' 
-			id='login-form' 
-			method='post'
-			onsubmit='return handleLoginSubmit();'>
+<section class='w-full px-2 min-h-[70vh]'>
+	<section id='attendance-modal' class='py-8 w-full'>
+		<div class='text-sm flex relative justify-center items-center'>
+			<div id='attendance-modal-card' class='w-1/2 max-md:w-[80%] p-8 bg-white rounded-xl shadow-xl relative'>
+				<form id="get-student-form" class="hidden">
+					<input type="hidden" id="get-student-form-idno" name="idno">
+				</form>
 				<div>
-					<label for='username'>Username</label>
-					<input class='text-black mt-1 px-2 py-1 w-full focus-visible:outline-none focus:ring-blue-500 rounded focus:ring-2 placeholder:text-sm' type="text" id='username' name='username' required>
+					<h1 class="uppercase text-xl text-center font-alte-bold">
+						<span class="text-blue-700">Mark</span>
+						<span class="text-blue-400">Attendance</span>
+					</h1>
 				</div>
-				<div>
-					<label for='password'>Password</label>
-					<input class='text-black mt-1 px-2 py-1 w-full focus-visible:outline-none focus:ring-blue-500 rounded focus:ring-2 placeholder:text-sm' type="password" id='password' name='password' placeholder='•••••••••' required>
+				<div 
+				id="attendance-info-section"
+				class='hidden flex gap-4 flex-col h-full'
+				>
+					<div class="relative flex gap-4">
+						<div class="flex justify-around w-full">
+							<img 
+							id="attendance-info-image"
+							src=""
+							class="h-32 rounded-md hover:ring-1 hover:ring-blue-300"
+							>
+							<img 
+							id="attendance-info-qrcode"
+							src=""
+							class="h-32 rounded-md hover:ring-1 hover:ring-blue-300"
+							>
+						</div>
+						<button 
+						type='button' 
+						onclick='gotoAttendanceQRCodeSection()'
+						onmouseover="showTooltip('info-section-tooltip')" 
+						onmouseout="hideTooltip('info-section-tooltip')"
+						class='absolute left-2 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
+							<i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
+							<div id='info-section-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+								<i class="fa-solid fa-circle-info"></i>
+								<span>Scan another QRCode</span>
+							</div>
+						</button>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>IDNO</label>
+						<input 
+						type='number' 
+						id='attendance-idno' 
+						class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+						readonly
+						>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>LASTNAME</label>
+						<input 
+						type='text' 
+						id='attendance-lastname' 
+						class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+						readonly
+						>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>FIRSTNAME</label>
+						<input 
+						type='text' 
+						id='attendance-firstname' 
+						class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+						readonly
+						>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>COURSE</label>
+						<input 
+						type='text' 
+						id='attendance-course' 
+						class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+						readonly
+						>
+					</div>
+					<div class='flex flex-col flex-grow'>
+						<label>LEVEL</label>
+						<input 
+						type='number' 
+						id='attendance-level' 
+						class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
+						readonly
+						>
+					</div>	
+					<button 
+					onclick="submitAttendance()"
+					class='w-40 py-2 px-2 self-end bg-green-500 rounded-md shadow-md text-white'>
+						<i class="fa-solid fa-check text-md text-white pointer-events-none"></i>
+						<span>Mark Attendance</span>
+					</button>
 				</div>
-				<div class='flex text-sm'>
-					<input 
-					class='mr-2 w-3 h-3 self-center rounded-sm border-blue-400 checked:bg-blue-500 focus:ring-offset-0 focus:ring-1 focus:ring-blue-400' 
-					type='checkbox' 
-					name='remember-check' 
-					id='remember-check' 
-					checked=true
+				<div 
+				id="attendance-qrcode-section" 
+				class="flex justify-center h-[75%] relative">
+					<div id='qrcode-reader' class='bg-gray-300 w-full h-full mt-2 self-center'>
+					</div>
+					<button 
+					type='button' 
+					onclick='gotoAttendanceInfoSection()'
+					onmouseover="showTooltip('qr-section-tooltip')" 
+					onmouseout="hideTooltip('qr-section-tooltip')"
+					class='absolute left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-blue-500 hover:bg-blue-400 active:bg-blue-600'
 					>
-					<label for='remember-check'>Remember me</label>
+						<i class="fa-solid fa-arrow-left text-md text-white pointer-events-none"></i>
+						<div id='qr-section-tooltip' class='hidden tooltip w-[5rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+							<i class="fa-solid fa-circle-info"></i>
+							<span>Go back</span>
+						</div>
+					</button>
 				</div>
-				<button class='text-black self-center py-2 text-sm rounded-2xl w-full shadow-lg bg-blue-300 hover:scale-105 hover:transition-scale active:scale-100' 
-				type='submit' 
-				form='login-form'
-				>Login</button>
-			</form>
+			</div>
 		</div>
-	</div>
+	</section>
 </section>
+
+<script>
+
+	let img = document.getElementById('attendance-info-image');
+	let qrimg = document.getElementById('attendance-info-qrcode');
+	if (img) {
+		img.src = defaultImg;
+	} else {
+		console.log('attendance info section: img element is null');
+	}
+
+	if (qrimg) {
+		qrimg.src = defaultImg;
+	} else {
+		console.log('attendance info section: qrimg element is null');
+	}
+
+	document.addEventListener('DOMContentLoaded', function() {
+		gotoAttendanceQRCodeSection();
+	})
+
+</script>
+
 {% endblock %}

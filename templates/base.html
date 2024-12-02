@@ -8,6 +8,54 @@
 	<link rel="stylesheet" href='/static/css/all.css'>
 	<link rel="icon" type="image/x-icon" href="/static/img/bg-img/favicon/favicon_io/favicon-32x32.png">
 	<title>Student Attendance Checker v1.0</title>
+	<script type='text/javascript' defer>
+		const admin_login_path = "{{ url_for('admin') }}";
+		const index_path = "{{ url_for('index') }}"
+		const student_info_path = "{{ url_for('studentlist') }}";
+		const delete_student_path = "{{ url_for('delete_student') }}";
+		const add_attendance_path = "{{ url_for('add_attendance') }}";
+		const attendance_viewer_path = "{{ url_for('attendanceviewer') }}";
+		const attendance_log_path = "{{ url_for('attendancelog') }}";
+		const get_student_path = "{{ url_for('get_student') }}";
+
+		const defaultImg = 'static/img/bg-img/personicon.svg';
+
+		let time = new Date();
+		let timestamp_year = '';
+		let timestamp_month = '';
+		let timestamp_day = '';
+		let timestamp_hr = '';
+		let timestamp_mins = '';
+		let timestamp_secs = '';
+		let timestamp_date = '';
+		let timestamp_time = '';
+
+		// timestamp
+		setInterval( function() {
+			time.setTime(time.getTime() + 1000);
+			timestamp_year = time.getFullYear();
+			timestamp_month = String(time.getMonth() + 1).padStart(2,'0');
+			timestamp_day = String(time.getDate()).padStart(2,'0');
+			timestamp_hr = String(time.getHours()).padStart(2, '0');
+			timestamp_mins = String(time.getMinutes()).padStart(2, '0');
+			timestamp_secs = String(time.getSeconds()).padStart(2,'0');
+			timestamp_date = `${timestamp_year}/${timestamp_month}/${timestamp_day}`;
+			timestamp_time = `${timestamp_hr}:${timestamp_mins}:${timestamp_secs}`;
+			
+			let element = document.getElementById('timestamp');
+			{% if header %}
+			element.textContent = `${timestamp_date} ${timestamp_time} Philippine Standard Time`;
+			{% endif %}
+		}, 1000);
+
+		addEventListener('onload', updateTimestamp());
+
+		function updateTimestamp() {
+			time = new Date();
+			console.log(timestamp_date);
+			console.log(timestamp_time);
+		}
+	</script>
 </head>
 <body>
 	{% with messages =  get_flashed_messages() %}
@@ -29,114 +77,11 @@
 	<section class="{% if not header %}bg-no-repeat bg-fixed bg-cover bg-[url('/static/img/bg-img/pexels-bg-image.jpg')]{% endif %} font-alte-regular">
 		<div>
 			{% if header %}
-			<header class='text-black top-0 z-10 fixed w-full h-[10%]'>
-				<div class='w-full z-20 relative'>
-					<div class='bg-white py-6 px-6 border-b-2 rounded-b-md shadow-md'>
-						<div class='grid grid-cols-2 gap-4'>
-							<div class='justify-self-start'>
-								<a href="{{ url_for('studentlist') }}" class='flex gap-4'>
-									<img class='w-10 object-contain flex self-start hover:cursor-pointer' 
-								src="/static/img/bg-img/psitslogo.png" 
-								alt="psitslogo">
-									<h1 class='self-center w-full uppercase text-xl font-alte-bold'>
-										<b>
-										{% set substrings = headerTitle.split(" ") %}
-										{% for string in substrings %}
-											{% if loop.index is odd %}
-											<span class='text-blue-700'>{{ string }}</span>
-											{% else %}
-											<span class='text-blue-400'>{{ string }}</span>
-											{% endif %}
-										{% endfor %}
-										</b>
-									</h1>
-								</a>
-							</div>
-							<div class='flex gap-4 justify-self-end'>
-								<div class='relative max-sm:hidden'>
-									<button 
-								type='button' 
-								onclick='markAttendance()'
-								onmouseover="showTooltip('mark-attendance-tooltip')"
-								onmouseout="hideTooltip('mark-attendance-tooltip')" 
-								class='rounded-[50%] shadow-md bg-blue-300 min-w-10 h-10 hover:scale-105 active:scale-100'>
-										<i class="fa-solid fa-check-to-slot text-lg text-gray-600 pointer-events-none"></i>
-									</button>
-									<div id='mark-attendance-tooltip' class='hidden tooltip absolute w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300 flex justify-center'>
-										<span>Mark Attendance</span>
-									</div>
-								</div>
-								<div class='relative max-sm:hidden'>
-									<button 
-								type='button' 
-								onclick='addStudent()' 
-								onmouseover="showTooltip('add-student-tooltip')"
-								onmouseout="hideTooltip('add-student-tooltip')"
-								class='rounded-[50%] shadow-md bg-blue-300 min-w-10 h-10 hover:scale-105 transition-scale active:scale-100'>
-										<i class="fa-solid fa-user-plus text-lg text-gray-600 pointer-events-none"></i>
-									</button>
-									<div id='add-student-tooltip' class='hidden tooltip absolute w-[8rem] top-0 left-0 opacity-0 transition-opacity duration-300 flex justify-center'>
-										<span>Add a new student</span>
-									</div>
-								</div>
-								<button id='header-dropdown' type='button' onclick='dropMenu()' class='rounded-[50%] shadow-md bg-gray-300 min-w-10 h-10 border-0 hover:scale-105 active:scale-100'>
-									<i class="fas fa-cogs text-lg text-gray-600"></i>
-									<input type='checkbox' class='hidden' id='dropdown-flag' value='on'>
-								</button>
-								<button type='button' onclick="window.location.href='{{ url_for('logout') }}'" class='static text-black text-sm py-2 rounded-2xl bg-blue-300 shadow-md w-20 h-10 hover:scale-105 active:scale-100'>Logout</button>
-							</div>
-							<div class='col-span-2 justify-self-end'>
-								<span id='timestamp'>...</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id='settings-dropdown' class='hidden absolute right-28 z-[9] -translate-y-10 opacity-0 transition-all duration-500 ease-in-out'>
-					<div class='bg-gray-100 rounded-b-md shadow-md h-full'>
-						<ul class='pt-2 flex flex-col justify-center items-center text-sm'>
-							<li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
-								<button type='button' 
-								onclick="markAttendance()" 
-								class='active:scale-95'
-								>
-									<i class="fa-solid fa-check-to-slot text-lg text-gray-600 pointer-events-none"></i>
-									<span class="ml-1">Mark Attendance</span>
-								</button>			
-							</li>
-							<li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
-								<button type='button' 
-								onclick="addStudent()" 
-								class='active:scale-95'
-								>
-									<i class="fa-solid fa-user-plus text-lg text-gray-600 pointer-events-none"></i>
-									<span class="ml-1">Add Student</span>
-								</button>			
-							</li>
-							<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-								<button type='button' 
-								onclick="window.location.href='{{ url_for('studentlist') }}'" 
-								class='active:scale-95'>Student List</button>			
-							</li>
-							<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-								<button type='button' 
-								onclick="window.location.href='{{ url_for('attendanceviewer') }}'" 
-								class='active:scale-95'>View Attendance</button>			
-							</li>
-							<li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-								<button type='button' 
-								onclick="window.location.href='{{ url_for('attendancelog') }}'" 
-								class='active:scale-95'>Attendance Log</button>			
-							</li>
-						</ul>
-					</div>
-				</div>
-			</header>
+				{% include 'header.html' %}
 			{% endif %}
 			<main id='main-body' class='py-44 max-md:py-56 max-sm:py-64'>
 				{% block content %}
 				{% endblock %}
-				{% if addStudentModal %}
-				{% endif %}
 			</main>
 			<footer class="text-gray-600 bottom-0 w-full h-[10%]">
 				<div class="bg-blue-200 rounded-t-md">
@@ -148,297 +93,11 @@
 				</div>
 			</footer>
 		</div>
-		<section id='student-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
-			<div class='text-sm flex h-full relative justify-center items-center'>
-				<div id='student-modal-card' class='w-1/2 max-md:w-[80%] p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
-					<button class='absolute top-5 right-5 active:scale-90' onclick='closeStudentModal()'>
-						<i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
-					</button>
-					<div id="add-student-title">
-						<h1 class="uppercase text-xl text-center font-alte-bold">
-							<span class="text-blue-700">Add</span>
-							<span class="text-blue-400">Student</span>
-						</h1>
-					</div>
-					<div id="edit-student-title">
-						<h1 class="uppercase text-xl text-center font-alte-bold">
-							<span class="text-blue-700">Edit</span>
-							<span class="text-blue-400">Student</span>
-						</h1>
-					</div>
-					<form 
-					id='student-modal-form' 
-					method='post'
-					action="{{ url_for('update_student') }}"
-					enctype='multipart/form-data'
-					onsubmit='return isFields();' 
-					class='h-full'>
-						<div class='flex flex-col items-stretch h-full pt-2 gap-3'>
-							<div class='w-full relative mb-2 flex flex-col'>
-								<input id='edit-add-flag' name='edit-add-flag' type='hidden' value='add'>
-								<input id='switch-to-cam-flag' type='checkbox' class='hidden' checked=false>
-								<button 
-								type='button' 
-								onclick='toggleSwitchToCam()'
-								onmouseover="showTooltip('edit-image-tooltip')" 
-								onmouseout="hideTooltip('edit-image-tooltip')"
-								class='absolute left-2 shadow-lg top-1 z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
-									<i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
-									<div id='edit-image-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-										<i class="fa-solid fa-circle-info"></i>
-										<span>Snap a portrait</span>
-									</div>
-								</button>
-								<button type='button' 
-								id='camera-button'
-								onmouseover="showTooltip('camera-tooltip')"
-								onmouseout="hideTooltip('camera-tooltip')"
-								onclick="takeSnapshot()"
-								class='hidden absolute shadow-md left-2 top-14 z-10 min-h-8 min-w-8 rounded-[50%] bg-red-600 hover:bg-red-500 active:bg-red-700'>
-									<i class="fa-solid fa-camera text-md text-white pointer-events-none"></i>
-									<div id='camera-tooltip' class='hidden tooltip w-[6rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-										<i class="fa-solid fa-circle-info"></i>
-										<span>Say cheese!</span>
-									</div>
-								</button>
-								<div id='modal-hide-when-edit' class='flex gap-4 justify-around'>
-									<label for='image-upload' class='relative'>
-										<img id='image' 
-										onmouseover="showTooltip('image-tooltip')"
-										onmouseout="hideTooltip('image-tooltip')"
-										class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'>
-										<input id='image-upload' name='image-upload' type='file'onclick='promptIfIdnoEmpty(event)' onchange="displayImgUpload(this)" class='hidden'>
-										<div id='image-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-											<i class="fa-solid fa-circle-info"></i>
-											<span>Choose a file from file picker to use as portrait.</span>
-										</div>
-									</label>
-									<div class="relative">
-										<img id='qrcode' 
-										name='qrcode' 
-										onmouseover="showTooltip('qrcode-tooltip')"
-										onmouseout="hideTooltip('qrcode-tooltip')"
-										class='h-32 rounded-md hover:ring-1 hover:ring-blue-300'
-										>
-										<input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
-										<div id='qrcode-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-											<i class="fa-solid fa-circle-info"></i>
-											<span>This student's QRCode will appear once a portrait has been inserted.</span>
-										</div>
-									</div>
-								</div>
-								<div id='modal-show-when-edit' class='hidden flex gap-4'>
-									<div id='webcam' class='w-[50%] h-32 bg-black'></div>
-									<div id='webcam-result' class='w-[50%] h-32 bg-black'></div>
-								</div>
-							</div>
-							<div class='flex flex-col flex-grow'>
-								<label>IDNO</label>
-								<input 
-								type='number' 
-								name='idno' 
-								id='idno' 
-								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-								maxlength="10"
-								readonly 
-								required
-								>
-							</div>
-							<div class='flex flex-col flex-grow'>
-								<label>LASTNAME</label>
-								<input 
-								type='text' 
-								name='lastname' 
-								id='lastname' 
-								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-								maxlength="20"
-								required
-								>
-							</div>
-							<div class='flex flex-col flex-grow'>
-								<label>FIRSTNAME</label>
-								<input 
-								type='text' 
-								name='firstname' 
-								id='firstname' 
-								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-								maxlength="20"
-								required
-								>
-							</div>
-							<div class='flex flex-col flex-grow'>
-								<label>COURSE</label>
-								<input 
-								type='text' 
-								name='course' 
-								id='course' 
-								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-								maxlength="20"
-								required
-								>
-							</div>
-							<div class='flex flex-col flex-grow'>
-								<label>LEVEL</label>
-								<input 
-								type='number' 
-								name='level' 
-								id='level' 
-								class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-								maxlength="10"
-								required>
-							</div>
-							<div class='flex gap-4'>
-								<button 
-								type="button" 
-								onclick="cancelData(modalIdNo)"
-								class='text-white text-sm py-2 rounded-xl bg-red-500 shadow-md w-1/2 hover:scale-105 active:scale-100'
-								>
-									Cancel
-								</button>
-								<button 
-								type="submit" 
-								id='student-modal-submit-btn' 
-								form='student-modal-form' 
-								class='text-white text-sm py-2 rounded-xl bg-blue-400 shadow-md w-1/2 hover:scale-105 active:scale-100'
-								>
-									Submit
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</section>
-		<section id='attendance-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
-			<div class='text-sm flex relative justify-center items-center'>
-				<div id='attendance-modal-card' class='w-1/2 max-md:w-[80%] h-full p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
-					<button class='absolute top-5 right-5 active:scale-90' onclick='closeAttendanceModal()'>
-						<i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
-					</button>
-					<form id="get-student-form" class="hidden">
-						<input type="hidden" id="get-student-form-idno" name="idno">
-					</form>
-					<div>
-						<h1 class="uppercase text-xl text-center font-alte-bold">
-							<span class="text-blue-700">Mark</span>
-							<span class="text-blue-400">Attendance</span>
-						</h1>
-					</div>
-					<div 
-					id="attendance-info-section"
-					class='hidden flex gap-4 flex-col h-full'
-					>
-						<div class="relative flex gap-4">
-							<div class="flex justify-around w-full">
-								<img 
-								id="attendance-info-image"
-								src=""
-								class="h-32"
-								>
-								<img 
-								id="attendance-info-qrcode"
-								src=""
-								class="h-32"
-								>
-							</div>
-							<button 
-							type='button' 
-							onclick='gotoAttendanceQRCodeSection()'
-							onmouseover="showTooltip('info-section-tooltip')" 
-							onmouseout="hideTooltip('info-section-tooltip')"
-							class='absolute left-2 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
-								<i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
-								<div id='info-section-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-									<i class="fa-solid fa-circle-info"></i>
-									<span>Scan another QRCode</span>
-								</div>
-							</button>
-						</div>
-						<div class='flex flex-col flex-grow'>
-							<label>IDNO</label>
-							<input 
-							type='number' 
-							id='attendance-idno' 
-							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-							readonly
-							>
-						</div>
-						<div class='flex flex-col flex-grow'>
-							<label>LASTNAME</label>
-							<input 
-							type='text' 
-							id='attendance-lastname' 
-							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-							readonly
-							>
-						</div>
-						<div class='flex flex-col flex-grow'>
-							<label>FIRSTNAME</label>
-							<input 
-							type='text' 
-							id='attendance-firstname' 
-							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-							readonly
-							>
-						</div>
-						<div class='flex flex-col flex-grow'>
-							<label>COURSE</label>
-							<input 
-							type='text' 
-							id='attendance-course' 
-							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-							readonly
-							>
-						</div>
-						<div class='flex flex-col flex-grow'>
-							<label>LEVEL</label>
-							<input 
-							type='number' 
-							id='attendance-level' 
-							class='mt-2 px-2 py-1 ring-1 ring-gray-300 rounded bg-gray-100 focus-visible:outline-none focus:ring-2 focus:ring-blue-500' 
-							readonly
-							>
-						</div>	
-						<button 
-						onclick="submitAttendance()"
-						class='w-40 py-2 px-2 self-end bg-green-400 rounded-md shadow-md text-white'>
-							<i class="fa-solid fa-check text-md text-white pointer-events-none"></i>
-							<span>Mark Attendance</span>
-						</button>
-					</div>
-					<div 
-					id="attendance-qrcode-section" 
-					class="flex justify-center h-[75%] relative">
-						<div id='qrcode-reader' class='bg-gray-300 w-full h-full mt-2 self-center'>
-						</div>
-						<button 
-						type='button' 
-						onclick='gotoAttendanceInfoSection()'
-						onmouseover="showTooltip('qr-section-tooltip')" 
-						onmouseout="hideTooltip('qr-section-tooltip')"
-						class='absolute left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-blue-500 hover:bg-blue-400 active:bg-blue-600'
-						>
-							<i class="fa-solid fa-arrow-left text-md text-white pointer-events-none"></i>
-							<div id='qr-section-tooltip' class='hidden tooltip w-[5rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-								<i class="fa-solid fa-circle-info"></i>
-								<span>Go back</span>
-							</div>
-						</button>
-					</div>
-				</div>
-			</div>
-		</section>
+		{% if header %}
+			{% include 'modals.html' %}
+		{% endif %}
 	</section>
 </body>
-<script type='text/javascript'>
-	const index_path = "{{ url_for('index') }}";
-	const student_info_path = "{{ url_for('studentlist') }}";
-	const delete_student_path = "{{ url_for('delete_student') }}";
-	const add_attendance_path = "{{ url_for('add_attendance') }}";
-	const attendance_viewer_path = "{{ url_for('attendanceviewer') }}";
-	const attendance_log_path = "{{ url_for('attendancelog') }}";
-	const get_student_path = "{{ url_for('get_student') }}";
-</script>
 <script src='/static/js/webcam.min.js'></script>
 <script src='/static/js/html5-qrcode.min.js'></script>
 <script src='/static/js/qrcode.js'></script>

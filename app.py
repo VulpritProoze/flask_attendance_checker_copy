@@ -147,21 +147,21 @@ def studentlist():
 	if not session.get('name'):
 		return redirect('/')
 	else:
-		return render_template('studentinfo.html', header=True, headerTitle='Student Information List', addStudentModal=True, students=get_students())
+		return render_template('studentinfo.html', header=True, headerTitle='Student Information List', students=get_students())
 
 @app.route('/attendanceviewer')
 def attendanceviewer():
 	if not session.get('name'):
 		return redirect('/')
 	else:
-		return render_template('attendanceviewer.html', header=True, headerTitle="Attendance Viewer", addStudentModal=True, attendances=get_recentattendances())
+		return render_template('attendanceviewer.html', header=True, headerTitle="Attendance Viewer", attendances=get_recentattendances())
 
 @app.route('/attendancelog')
 def attendancelog():
 	if not session.get('name'):
 		return redirect('/')
 	else:
-		return render_template('attendancelog.html', header=True, headerTitle="Attendance Log", addStudentModal=True, attendances=get_attendance())
+		return render_template('attendancelog.html', header=True, headerTitle="Attendance Log", attendances=get_attendance())
 
 @app.route('/get_student', methods=['POST'])
 def get_student():
@@ -180,7 +180,7 @@ def logout():
 	session['name'] = None
 	return redirect('/')
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST'])
 def login():
 	username:str = request.form['username']
 	password:str = request.form['password']
@@ -192,7 +192,11 @@ def login():
 			return redirect('/studentlist')
 		else:
 			flash('Login Attempt: Login failed! Username or password is invalid.')
-			return redirect('/')
+			return redirect('/admin')
+
+@app.route('/admin', methods=['POST', 'GET'])
+def admin():
+    return render_template('admin.html')
 
 @app.route('/')
 def index():
