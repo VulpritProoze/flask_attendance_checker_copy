@@ -3,7 +3,7 @@
 <section class='text-sm text-black min-h-[100vh]'>
 	<div class='min-h-64 px-16 overflow-x-auto relative flex flex-col gap-8'>
 		<table class='w-full table-auto text-left shadow-md' id='student-info-table'>
-			<thead class='text-xs uppercase bg-blue-200'>
+			<thead class='text-xs uppercase bg-gray-200'>
 				<tr>
 					<th class='px-6 py-3'>IDNO</th>
 					<th class='px-6 py-3'>Lastname</th>
@@ -28,15 +28,12 @@
 							data-idno="{{ student['idno'] }}"
 							data-qrcode="{{ student['qrcode'] }}"
 							onclick='downloadQR(this)'
-							class='active:scale-95'
+							class='px-2 w-32 text-white active:scale-95 bg-blue-500 rounded text-xs'
 							onmouseover="showTooltip('download-qr-button-tooltip-{{ student['idno'] }}')"
 							onmouseout="hideTooltip('download-qr-button-tooltip-{{ student['idno'] }}')"
 							>
-								<i class="fa-solid fa-download text-lg text-blue-600 hover:scale-110 transition-transform ease-in-out duration-300"></i>
+								DOWNLOAD QR
 							</button>
-							<div id="download-qr-button-tooltip-{{ student['idno'] }}" class='hidden tooltip w-[5rem] flex justify-center top-0 left-2 opacity-0 transition-opacity duration-300'>
-								<span class='text-center'>Download Student QR</span>
-							</div>
 						</div>
 						<div class='relative'>
 							<button
@@ -49,29 +46,19 @@
 							data-qrcode="{{ student['qrcode'] }}"
 							data-image="{{ student['image'] }}"
 							onclick='editStudent(this)'
-							onmouseover="showTooltip('edit-button-tooltip-{{ student['idno'] }}')"
-							onmouseout="hideTooltip('edit-button-tooltip-{{ student['idno'] }}')"
-							class="active:scale-95 hover:rotate-45 transition-transform ease-in-out duration-300">
-								<i class="fas fa-cog text-lg text-yellow-600 pointer-events-none"></i>
+							class="px-2 text-white bg-yellow-500 rounded active:scale-95 text-xs">
+								EDIT
 							</button>
-							<div id="edit-button-tooltip-{{ student['idno'] }}" class='hidden tooltip w-[5rem] flex justify-center top-0 left-2 opacity-0 transition-opacity duration-300'>
-								<span>Edit Student</span>
-							</div>
 						</div>
 						<div class='relative'>
 							<button 
 							type='button'
 							data-idno="{{ student['idno'] }}"
 							onclick='deleteStudent(this)'
-							class='active:scale-95'
-							onmouseover="showTooltip('delete-button-tooltip-{{ student['idno'] }}')"
-							onmouseout="hideTooltip('delete-button-tooltip-{{ student['idno'] }}')"
+							class='px-2 text-white active:scale-95 bg-red-500 rounded text-xs'
 							>
-								<i class="fas fa-trash-alt text-lg text-red-600 hover:scale-110 transition-transform ease-in-out duration-300"></i>
+								DELETE
 							</button>
-							<div id="delete-button-tooltip-{{ student['idno'] }}" class='hidden !bg-red-500 tooltip w-[6rem] flex justify-center top-0 left-2 opacity-0 transition-opacity duration-300'>
-								<span>Delete Student</span>
-							</div>
 						</div>
 					</td>
 				</tr>
@@ -79,7 +66,7 @@
 			</tbody>
 		</table>
 		<span id='empty-student-table-span' class='empty-table-span hidden text-lg self-center'>
-			There are no students ಠ╭╮ಠ...
+			Student Table is empty.
 		</span>
 	</div>
 </section>

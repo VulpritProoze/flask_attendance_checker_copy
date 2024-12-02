@@ -1,19 +1,19 @@
 <section id='student-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
     <div class='text-sm flex h-full relative justify-center items-center'>
-        <div id='student-modal-card' class='w-1/2 max-md:w-[80%] p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
+        <div 
+        id='student-modal-card' 
+        class='w-1/2 max-md:w-[80%] flex flex-col h-full p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
             <button class='absolute top-5 right-5 active:scale-90' onclick='closeStudentModal()'>
                 <i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
             </button>
             <div id="add-student-title">
-                <h1 class="uppercase text-xl text-center font-alte-bold">
-                    <span class="text-blue-700">Add</span>
-                    <span class="text-blue-400">Student</span>
+                <h1 class="uppercase text-xl text-center">
+                    ADD STUDENT
                 </h1>
             </div>
             <div id="edit-student-title">
-                <h1 class="uppercase text-xl text-center font-alte-bold">
-                    <span class="text-blue-700">Edit</span>
-                    <span class="text-blue-400">Student</span>
+                <h1 class="uppercase text-xl text-center">
+                    EDIT STUDENT
                 </h1>
             </div>
             <form 
@@ -22,7 +22,7 @@
             action="{{ url_for('update_student') }}"
             enctype='multipart/form-data'
             onsubmit='return isFields();' 
-            class='h-full'>
+            class='h-full overflow-y-scroll overflow-x-hidden'>
                 <div class='flex flex-col items-stretch h-full pt-2 gap-3'>
                     <div class='w-full relative mb-2 flex flex-col'>
                         <input id='edit-add-flag' name='edit-add-flag' type='hidden' value='add'>
@@ -30,14 +30,8 @@
                         <button 
                         type='button' 
                         onclick='toggleSwitchToCam()'
-                        onmouseover="showTooltip('edit-image-tooltip')" 
-                        onmouseout="hideTooltip('edit-image-tooltip')"
-                        class='absolute left-2 shadow-lg top-1 z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
-                            <i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
-                            <div id='edit-image-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span>Snap a portrait</span>
-                            </div>
+                        class='absolute px-2 w-32 text-white active:scale-95 bg-blue-500 rounded text-xs left-2 top-0 shadow-lg z-20 min-h-8 min-w-8 rounded bg-gray-500 hover:bg-gray-400 active:bg-gray-600'>
+                            SNAP A PORTRAIT
                         </button>
                         <button type='button' 
                         id='camera-button'
@@ -46,9 +40,9 @@
                         onclick="takeSnapshot()"
                         class='hidden absolute shadow-md left-2 top-14 z-10 min-h-8 min-w-8 rounded-[50%] bg-red-600 hover:bg-red-500 active:bg-red-700'>
                             <i class="fa-solid fa-camera text-md text-white pointer-events-none"></i>
-                            <div id='camera-tooltip' class='hidden tooltip w-[6rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
+                            <div id='camera-tooltip' class='hidden tooltip !bg-gray-500 w-[6rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
                                 <i class="fa-solid fa-circle-info"></i>
-                                <span>Say cheese!</span>
+                                <span>TAKE A SNAP</span>
                             </div>
                         </button>
                         <div id='modal-hide-when-edit' class='flex gap-4 justify-around'>
@@ -60,7 +54,7 @@
                                 <input id='image-upload' name='image-upload' type='file'onclick='promptIfIdnoEmpty(event)' onchange="displayImgUpload(this)" class='hidden'>
                                 <div id='image-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
                                     <i class="fa-solid fa-circle-info"></i>
-                                    <span>Choose a file from file picker to use as portrait.</span>
+                                    <span>PICK A FILE</span>
                                 </div>
                             </label>
                             <div class="relative">
@@ -73,7 +67,7 @@
                                 <input id='qrcode-upload' name='qrcode-upload' type='file' class='hidden'>
                                 <div id='qrcode-tooltip' class='hidden tooltip absolute w-[12rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
                                     <i class="fa-solid fa-circle-info"></i>
-                                    <span>This student's QRCode will appear once a portrait has been inserted.</span>
+                                    <span>QRCODE IMAGE</span>
                                 </div>
                             </div>
                         </div>
@@ -160,8 +154,8 @@
     </div>
 </section>
 <section id='attendance-modal' class='hidden py-8 overflow-hidden z-20 w-full h-screen bg-black/40 top-0 fixed transition-colors duration-500'>
-    <div class='text-sm flex relative justify-center items-center'>
-        <div id='attendance-modal-card' class='w-1/2 max-md:w-[80%] h-full p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
+    <div class='text-sm flex relative justify-center items-center h-full'>
+        <div id='attendance-modal-card' class='w-1/2 max-md:w-[80%] h-full flex flex-col p-8 bg-white rounded-xl shadow-xl opacity-0 relative z-[21] translate-y-3/4 transition-all duration-500 ease-in-out'>
             <button class='absolute top-5 right-5 active:scale-90' onclick='closeAttendanceModal()'>
                 <i class="fa-solid fa-square-xmark text-red-500 text-lg hover:scale-110"></i>
             </button>
@@ -169,14 +163,13 @@
                 <input type="hidden" id="get-student-form-idno" name="idno">
             </form>
             <div>
-                <h1 class="uppercase text-xl text-center font-alte-bold">
-                    <span class="text-blue-700">Mark</span>
-                    <span class="text-blue-400">Attendance</span>
+                <h1 class="uppercase text-xl text-center">
+                    MARK ATTENDANCE
                 </h1>
             </div>
             <div 
             id="attendance-info-section"
-            class='hidden flex gap-4 flex-col h-full'
+            class='hidden flex gap-4 flex-col h-full overflow-y-scroll overflow-x-hidden'
             >
                 <div class="relative flex gap-4">
                     <div class="flex justify-around w-full">
@@ -194,14 +187,8 @@
                     <button 
                     type='button' 
                     onclick='gotoAttendanceQRCodeSection()'
-                    onmouseover="showTooltip('info-section-tooltip')" 
-                    onmouseout="hideTooltip('info-section-tooltip')"
-                    class='absolute left-2 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-yellow-600 hover:bg-yellow-500 active:bg-yellow-700'>
-                        <i class="fa-solid fa-pen-to-square text-md text-white pointer-events-none"></i>
-                        <div id='info-section-tooltip' class='hidden tooltip w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-                            <i class="fa-solid fa-circle-info"></i>
-                            <span>Scan another QRCode</span>
-                        </div>
+                    class='absolute px-2 w-32 text-white active:scale-95 bg-blue-500 rounded text-xs left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded bg-gray-500 hover:bg-gray-400 active:bg-gray-600'>
+                        SCAN A QRCODE
                     </button>
                 </div>
                 <div class='flex flex-col flex-grow'>
@@ -258,21 +245,15 @@
             </div>
             <div 
             id="attendance-qrcode-section" 
-            class="flex justify-center h-[75%] relative">
+            class="flex justify-center relative h-full overflow-y-scroll overflow-x-hidden">
                 <div id='qrcode-reader' class='bg-gray-300 w-full h-full mt-2 self-center'>
                 </div>
                 <button 
                 type='button' 
                 onclick='gotoAttendanceInfoSection()'
-                onmouseover="showTooltip('qr-section-tooltip')" 
-                onmouseout="hideTooltip('qr-section-tooltip')"
-                class='absolute left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded-[50%] bg-blue-500 hover:bg-blue-400 active:bg-blue-600'
+                class='absolute px-2 w-32 text-white active:scale-95 bg-blue-500 rounded text-xs left-2 top-5 shadow-lg z-20 min-h-8 min-w-8 rounded bg-gray-500 hover:bg-gray-400 active:bg-gray-600'
                 >
-                    <i class="fa-solid fa-arrow-left text-md text-white pointer-events-none"></i>
-                    <div id='qr-section-tooltip' class='hidden tooltip w-[5rem] top-0 left-0 opacity-0 transition-opacity duration-300'>
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>Go back</span>
-                    </div>
+                    Go back
                 </button>
             </div>
         </div>

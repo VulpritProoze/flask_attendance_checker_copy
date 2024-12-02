@@ -18,7 +18,7 @@
 		const attendance_log_path = "{{ url_for('attendancelog') }}";
 		const get_student_path = "{{ url_for('get_student') }}";
 
-		const defaultImg = 'static/img/bg-img/personicon.svg';
+		const defaultImg = 'static/img/bg-img/personicon.jpg';
 
 		let time = new Date();
 		let timestamp_year = '';
@@ -64,8 +64,8 @@
 				{% for message in messages %}
 				<div data-index="{{ loop.index-1 }}"
 				class='flash-msg relative opacity-100 transition-all duration-300 shadow-md'>
-					<div class='flex justify-start mt-2 shadow-lg rounded-md bg-blue-500 py-3 px-3 w-[50vw] mx-auto gap-3'>
-						<i class='fa fa-warning font-sm self-center text-yellow-200'></i>
+					<div class='flex justify-start mt-2 shadow-lg rounded-md bg-orange-500 py-3 px-3 w-[50vw] mx-auto gap-3'>
+						<i class='fa fa-warning font-sm self-center text-gray-200'></i>
 						<p class='self-center text-sm w-full text-white break-all'>{{ message }}</p>
 						<button type='button' class='pointer-events-auto hover:scale-110 active:scale-95' onclick="deleteFlash(this)"><i class='fa fa-close font-sm self-center text-white'></i></button>
 					</div>
@@ -74,7 +74,7 @@
 			</div>
 		{% endif %}
 	{% endwith %}
-	<section class="{% if not header %}bg-no-repeat bg-fixed bg-cover bg-[url('/static/img/bg-img/pexels-bg-image.jpg')]{% endif %} font-alte-regular">
+	<section class="font-logam">
 		<div>
 			{% if header %}
 				{% include 'header.html' %}
@@ -84,11 +84,11 @@
 				{% endblock %}
 			</main>
 			<footer class="text-gray-600 bottom-0 w-full h-[10%]">
-				<div class="bg-blue-200 rounded-t-md">
+				<div class="bg-gray-200 rounded-t-md">
 					<div class="container mx-auto py-6 px-5 flex gap-4 justify-center align-center">
 						<img class='w-10 object-contain flex self-start' src="/static/img/bg-img/psitslogo.png" alt="psitslogo">
 						<h3 class='text-black text-sm sm:text-left self-center'>Student Attendance Checker</h3>
-						<p class="text-black text-sm sm:text-left self-center">&copy; 2024, Alin, Ram Railey</p>
+						<p class="text-black text-sm sm:text-left self-center">&copy; 2024, CHANGE ME! :)</p>
 					</div>
 				</div>
 			</footer>

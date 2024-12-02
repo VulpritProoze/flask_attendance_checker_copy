@@ -7,96 +7,40 @@
                         <img class='w-10 object-contain flex self-start hover:cursor-pointer' 
                     src="/static/img/bg-img/psitslogo.png" 
                     alt="psitslogo">
-                        <h1 class='self-center w-full uppercase text-xl font-alte-bold'>
+                        <h1 class='self-center w-full uppercase text-xl'>
                             <b class="text-black">
-                            {% set substrings = headerTitle.split(" ") %}
-                            {% for string in substrings %}
-                                {% if loop.index is odd %}
-                                <span class='text-blue-700'>{{ string }}</span>
-                                {% else %}
-                                <span class='text-blue-400'>{{ string }}</span>
-                                {% endif %}
-                            {% endfor %}
+                                {{ headerTitle }}
                             </b>
                         </h1>
                     </a>
                 </div>
                 <div class='flex gap-4 justify-self-end'>
                     <div class='relative max-sm:hidden'>
-                        <button 
-                    type='button' 
-                    onclick='markAttendance()'
-                    onmouseover="showTooltip('mark-attendance-tooltip')"
-                    onmouseout="hideTooltip('mark-attendance-tooltip')" 
-                    class='rounded-[50%] shadow-md bg-blue-300 min-w-10 h-10 hover:scale-105 active:scale-100'>
-                            <i class="fa-solid fa-check-to-slot text-lg text-gray-600 pointer-events-none"></i>
-                        </button>
-                        <div id='mark-attendance-tooltip' class='hidden tooltip absolute w-[7rem] top-0 left-0 opacity-0 transition-opacity duration-300 flex justify-center'>
-                            <span>Mark Attendance</span>
-                        </div>
                     </div>
-                    <div class='relative max-sm:hidden'>
-                        <button 
+                    <button 
                     type='button' 
                     onclick='addStudent()' 
-                    onmouseover="showTooltip('add-student-tooltip')"
-                    onmouseout="hideTooltip('add-student-tooltip')"
-                    class='rounded-[50%] shadow-md bg-blue-300 min-w-10 h-10 hover:scale-105 transition-scale active:scale-100'>
-                            <i class="fa-solid fa-user-plus text-lg text-gray-600 pointer-events-none"></i>
-                        </button>
-                        <div id='add-student-tooltip' class='hidden tooltip absolute w-[8rem] top-0 left-0 opacity-0 transition-opacity duration-300 flex justify-center'>
-                            <span>Add a new student</span>
-                        </div>
-                    </div>
-                    <button id='header-dropdown' type='button' onclick='dropMenu()' class='rounded-[50%] shadow-md bg-gray-300 min-w-10 h-10 border-0 hover:scale-105 active:scale-100'>
-                        <i class="fas fa-cogs text-lg text-gray-600"></i>
-                        <input type='checkbox' class='hidden' id='dropdown-flag' value='on'>
+                    class='px-2 text-white active:scale-95 bg-green-500 rounded text-xs'>
+                        ADD STUDENT
                     </button>
-                    <button type='button' onclick="window.location.href='{{ url_for('logout') }}'" class='static text-black text-sm py-2 rounded-2xl bg-blue-300 shadow-md w-20 h-10 hover:scale-105 active:scale-100'>Logout</button>
+                    <button type='button' 
+                    onclick="window.location.href='{{ url_for('studentlist') }}'" 
+                    class='px-2 text-white active:scale-95 bg-gray-500 rounded text-xs'>
+                        STUDENT LIST
+                    </button>
+                    <button type='button' 
+                    onclick="window.location.href='{{ url_for('attendanceviewer') }}'" 
+                    class='px-2 text-white active:scale-95 bg-gray-500 rounded text-xs'>
+                    View Attendance
+                    </button>
+                    <button type='button' onclick="window.location.href='{{ url_for('logout') }}'" class='static text-black text-sm py-2 rounded-2xl bg-gray-300 shadow-md w-20 h-10 hover:scale-105 active:scale-100'>
+                        LOGOUT
+                    </button>
                 </div>
                 <div class='col-span-2 justify-self-end'>
                     <span id='timestamp'>...</span>
                 </div>
             </div>
-        </div>
-    </div>
-    <div id='settings-dropdown' class='hidden absolute right-28 z-[9] -translate-y-10 opacity-0 transition-all duration-500 ease-in-out'>
-        <div class='bg-gray-100 rounded-b-md shadow-md h-full'>
-            <ul class='pt-2 flex flex-col justify-center items-center text-sm'>
-                <li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
-                    <button type='button' 
-                    onclick="markAttendance()" 
-                    class='active:scale-95'
-                    >
-                        <i class="fa-solid fa-check-to-slot text-lg text-gray-600 pointer-events-none"></i>
-                        <span class="ml-1">Mark Attendance</span>
-                    </button>			
-                </li>
-                <li class='border-b-2 w-full bg-gray-300 hover:bg-blue-100 px-4 py-2 text-center sm:hidden'>
-                    <button type='button' 
-                    onclick="addStudent()" 
-                    class='active:scale-95'
-                    >
-                        <i class="fa-solid fa-user-plus text-lg text-gray-600 pointer-events-none"></i>
-                        <span class="ml-1">Add Student</span>
-                    </button>			
-                </li>
-                <li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-                    <button type='button' 
-                    onclick="window.location.href='{{ url_for('studentlist') }}'" 
-                    class='active:scale-95'>Student List</button>			
-                </li>
-                <li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-                    <button type='button' 
-                    onclick="window.location.href='{{ url_for('attendanceviewer') }}'" 
-                    class='active:scale-95'>View Attendance</button>			
-                </li>
-                <li class='border-b-2 w-full hover:bg-blue-100 px-4 py-2 text-center'>
-                    <button type='button' 
-                    onclick="window.location.href='{{ url_for('attendancelog') }}'" 
-                    class='active:scale-95'>Attendance Log</button>			
-                </li>
-            </ul>
         </div>
     </div>
 </header>
